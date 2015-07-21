@@ -1,6 +1,6 @@
 #include <TMath.h>
 #include "TCSM.h"
-#define RECOVERHITS 1
+#define RECOVERHITS 0
 #define SUMHITS 0
 
 ClassImp(TCSM)
@@ -345,6 +345,7 @@ void TCSM::BuildVH(vector<int> &vvec,vector<int> &hvec,vector<TCSMHit> &hitvec,T
     int ve2 = cdataVH->GetVertical_Energy(vvec.at(1));
     int he1 = cdataVH->GetHorizontal_Energy(hvec.at(0));
     int he2 = cdataVH->GetHorizontal_Energy(hvec.at(1));
+    
     if( (AlmostEqual(ve1,he1) && AlmostEqual(ve2,he2)) || (AlmostEqual(ve1,he2) && AlmostEqual(ve2,he1)) )
     {
       //I can build both 1,1 and 2,2 or 1,2 and 2,1
