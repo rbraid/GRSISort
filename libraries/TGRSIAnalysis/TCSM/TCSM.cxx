@@ -391,7 +391,6 @@ void TCSM::BuildVH(vector<int> &vvec,vector<int> &hvec,vector<TCSMHit> &hitvec,T
       vvec.pop_back();
     }
   }
-
   /*
   else if(vvec.size()==3&&hvec.size()==3)
   {
@@ -408,7 +407,7 @@ void TCSM::BuildVH(vector<int> &vvec,vector<int> &hvec,vector<TCSMHit> &hitvec,T
     cdataVH->Print();
     
   }
-  else if(vvec.size()==2&&hvec.size()==3)
+  else if(vvec.size()==3&&hvec.size()==2)
   {
     cdataVH->Print();
     
@@ -424,7 +423,7 @@ void TCSM::BuildVH(vector<int> &vvec,vector<int> &hvec,vector<TCSMHit> &hitvec,T
     
   }
   */
-    
+
   /*else
   {
     vector<bool> vertUsed (vvec.size(),false);
