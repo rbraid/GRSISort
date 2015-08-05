@@ -1,6 +1,15 @@
 
 #include "TCSMHit.h"
 
+////////////////////////////////////////////////////////////////
+//
+// TCSMHit
+//
+// This class contains individual CSM Hits.
+// Data such as hit energy and position is here.
+//
+////////////////////////////////////////////////////////////////
+
 ClassImp(TCSMHit)
 
 TCSMHit::TCSMHit()	{	
@@ -10,9 +19,112 @@ TCSMHit::TCSMHit()	{
 
 TCSMHit::~TCSMHit()	{	}
 
+void TCSMHit::SetIsotope(Int_t Mass, TString Element)
+{
+//Sets isotope mass and element.
+  
+  //Element.ToLower(); //This is just to standardize things.
+  
+  if( isotope_mass != -1 || isotope_element != "default")
+  {
+    if( isotope_mass != Mass || isotope_element != Element)
+      std::cerr<<"  Warning: Istope redefinition.  Overwriting."<<std::endl;
+  }
+  
+  Element.ToLower();
+  
+  isotope_mass = Mass;
+  isotope_element = Element;
+}
+
+void TCSMHit::SetIsotope(TString Info)
+{
+  TString Mass;
+  TString Element;
+  
+  if(TString(Info(0,2)).IsDigit())
+  {
+    Mass=Info(0,2);
+    Element=Info(2,4);
+  }
+  else if(TString(Info(2,4)).IsDigit())
+  {
+    Mass=Info(2,4);
+    Element=Info(0,2);
+  }
+
+  Element.ToLower();
+
+  if( isotope_mass != -1 || isotope_element != "default")
+  {
+    if( isotope_mass != Mass || isotope_element != Element)
+      std::cerr<<"  Warning: Istope redefinition.  Overwriting."<<std::endl;
+  }
+
+  std::cout<<"Testing SetIsotope, input: "<<Info<<", Parsed Mass: "<<Mass<<" , Parsed Element: "<<Element<<std::endl;
+  isotope_mass = Mass.Atof();
+  isotope_element = Element;
+}
+
+TString TCSMHit::GetIsotope()
+{
+  TString returnedString;
+
+  returnedString.Clear();
+
+  returnedString = Form("%d", isotope_mass) + isotope_element;
+
+  if(returnedString == "-1default")
+    returnedString = "default";  //I like to drop the -1 for usability reasons.
+
+  return returnedString;
+}
+
+Double_t TCSMHit::GetCorrectedEnergyMeV()
+{
+  bool debugCE = 0;
+  if(!IsotopeSet())
+  {
+    std::cerr<<" Caution: Correcting Energy when Isotope isn't set!"<<std::endl;
+    return(GetEnergyMeV());
+  }
+  
+  Double_t E = GetEnergyMeV();  //Go from keV to MeV
+  
+  if(debugCE) std::cout<<"My initial energy is: "<<E<<" MeV"<<std::endl;
+  double effthick = 2.4/1000.; //This function uses mm not um.
+  effthick = effthick/2; //We assume we only go through half on average.
+  if(debugCE) std::cout<<"Half of the thickness of the Target is: "<<effthick<<" mm"<<std::endl;
+  effthick = effthick/cos(GetTheta()); //This takes into account the angle effect, the minimum is perpindicular
+  if(debugCE) std::cout<<"The effective thickness is: "<<effthick<<" mm, due to an angle of: "<<GetThetaDeg()<<" degrees"<<std::endl;
+  
+  Double_t elost = -10.;
+  
+  if(GetIsotope()=="11be")
+    elost = 1080.85*effthick - 33.4462*pow(effthick,2) + 0.92379*pow(effthick,3) - 0.0160147*pow(effthick,4) + 0.0001199256*pow(effthick,5);
+  else if(GetIsotope()=="12be")
+    elost = 1208.8*effthick - 41.8894*pow(effthick,2) + 1.25691*pow(effthick,3) - 0.0223553*pow(effthick,4) + 0.0001661186*pow(effthick,5);
+  else if(GetIsotope()=="4he")
+    elost = 166.114*effthick - 6.2685*pow(effthick,2) + 0.168201*pow(effthick,3) - 0.002540775*pow(effthick,4) + 0.00001618362*pow(effthick,5);
+  else
+    elost = -100;
+  
+  if(debugCE) std::cout<<"My energy lost is: "<<elost<<" MeV"<<std::endl;
+  
+  return((E+elost));
+}
+
+bool TCSMHit::IsotopeSet()
+{
+  if(GetIsotope() == "default")
+    return 0;
+  else
+    return 1;
+}
 
 void TCSMHit::Clear(Option_t *options)	{
-
+//Sets all private variables to their defaults.
+//NOTE:  defaults aren't always 0!
    hor_d_strip 	= -1;
    hor_d_charge = 0;
    hor_d_cfd    = 0.0;
@@ -40,6 +152,9 @@ void TCSMHit::Clear(Option_t *options)	{
    hor_e_time   = 0.0;
    ver_e_time   = 0.0;
    e_position.SetXYZ(0,0,1);
+
+   isotope_mass = -1;
+   isotope_element = "default";
 
    detectornumber = 0;	//
 }

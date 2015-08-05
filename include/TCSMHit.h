@@ -1,3 +1,4 @@
+//Author: Ryan Braid
 #ifndef TCSMHIT_H
 #define TCSMHIT_H
 
@@ -6,6 +7,8 @@
 #include <stdio.h>
 #include <utility>
 #include <iostream>
+
+#include "TMath.h"
 
 #include "TChannel.h"
 #include "TVector3.h" 
@@ -33,7 +36,10 @@ class TCSMHit : public TGRSIDetectorHit 	{
 
 		Short_t			ver_e_strip;		//
 		Int_t	         ver_e_charge;	//
-		Int_t 			ver_e_cfd;		// 		
+		Int_t 			ver_e_cfd;		//
+
+		Int_t 		isotope_mass;
+		TString		isotope_element;
 
 	  	Double_t hor_d_energy;		//		
 	  	Double_t ver_d_energy;		//		
@@ -112,6 +118,14 @@ class TCSMHit : public TGRSIDetectorHit 	{
 		Double_t GetEnergy() const		{return GetDEnergy() + GetEEnergy();} //!
 		Double_t GetTime() const		{return ver_d_time;} //!
 
+		Double_t GetEnergyMeV() const		{return GetEnergy()/1000.;}
+		Double_t GetThetaDeg() const 		{return GetDPosition().Theta()*180/TMath::Pi();}
+		Double_t GetTheta() const 		{return GetDPosition().Theta();}
+		TString GetIsotope();
+		Double_t GetCorrectedEnergyMeV();
+		bool IsotopeSet();
+		
+
 ///////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -160,10 +174,13 @@ class TCSMHit : public TGRSIDetectorHit 	{
 
 		//void SetHorizontalWave(std::vector<int> &wave)	{ hor_strip_wave = wave;	} 
 		//void SetVerticalWave(std::vector<int> &wave)	{ ver_strip_wave = wave;	} 
-		//void SetPadWave(std::vector<int> &wave)	{ pad_wave = wave;	} 
+		//void SetPadWave(std::vector<int> &wave)	{ pad_wave = wave;	}
+
+		void SetIsotope(Int_t Mass, TString Element);
+		void SetIsotope(TString);
 
 		
-	ClassDef(TCSMHit,3)
+	ClassDef(TCSMHit,3)  //CSM Hits
 };
 
 
