@@ -23,16 +23,17 @@ void TCSMHit::SetIsotope(Int_t Mass, TString Element)
 {
 //Sets isotope mass and element.
   
-  //Element.ToLower(); //This is just to standardize things.
+  Element.ToLower(); //This is just to standardize things.
   
   if( isotope_mass != -1 || isotope_element != "default")
   {
     if( isotope_mass != Mass || isotope_element != Element)
+    {
       std::cerr<<"  Warning: Istope redefinition.  Overwriting."<<std::endl;
+      std::cerr<<"  "<<isotope_mass<<isotope_element<<" --> "<<Mass<<Element<<std::endl;
+    }
   }
-  
-  Element.ToLower();
-  
+    
   isotope_mass = Mass;
   isotope_element = Element;
 }
@@ -57,11 +58,14 @@ void TCSMHit::SetIsotope(TString Info)
 
   if( isotope_mass != -1 || isotope_element != "default")
   {
-    if( isotope_mass != Mass || isotope_element != Element)
+    if( isotope_mass != Mass.Atof() || isotope_element != Element)
+    {
       std::cerr<<"  Warning: Istope redefinition.  Overwriting."<<std::endl;
+      std::cerr<<"  "<<isotope_mass<<isotope_element<<" --> "<<Mass.Atof()<<Element<<std::endl;
+    }
   }
 
-  std::cout<<"Testing SetIsotope, input: "<<Info<<", Parsed Mass: "<<Mass<<" , Parsed Element: "<<Element<<std::endl;
+  //std::cout<<"Testing SetIsotope, input: "<<Info<<", Parsed Mass: "<<Mass<<" , Parsed Element: "<<Element<<std::endl;
   isotope_mass = Mass.Atof();
   isotope_element = Element;
 }
