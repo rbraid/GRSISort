@@ -143,7 +143,7 @@ void TCSMHit::Clear(Option_t *options)	{
 	
    ver_e_strip  = -1;
    ver_e_charge = 0;
-   ver_e_cfd    = 0.0;      
+   ver_e_cfd    = 0.0;
 
    hor_d_energy = 0.0;   
    ver_d_energy = 0.0;   
@@ -159,6 +159,8 @@ void TCSMHit::Clear(Option_t *options)	{
 
    isotope_mass = -1;
    isotope_element = "default";
+
+   triggerid = -1;
 
    detectornumber = 0;	//
 }
@@ -350,6 +352,7 @@ Double_t TCSMHit::GetEEnergy() const
 void TCSMHit::Print(Option_t *options) const	{
   std::cout<<"Printing TCSMHit:  Horizontal    Vertical"<<std::endl;
   std::cout<<"Detector number: "<<GetDetectorNumber()<<std::endl;
+  std::cout<<"TriggerID: "<<GetTriggerID()<<std::endl;
   //std::cout<<"Detector position: "<<GetDetectorPosition()<<std::endl;
   std::cout<<"D"<<std::endl;
   std::cout<<"Strip: "<<GetDHorizontalStrip()<<" "<<GetDVerticalStrip()<<std::endl;

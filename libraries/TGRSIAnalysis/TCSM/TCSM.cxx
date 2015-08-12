@@ -489,6 +489,8 @@ TCSMHit TCSM::MakeHit(int hh, int vv, TCSMData *cdata)
   if(cdata->GetHorizontal_DetectorPos(hh)=='D')
   {
     //cout<<"MakeHit in D"<<endl;
+    //TFragment TEST = cdata->GetHorizontal_Fragment(hh);
+    //csmhit.SetTriggerID(cdata->GetHorizontal_Fragment(hh).TriggerId);
     csmhit.SetDetectorNumber(cdata->GetHorizontal_DetectorNbr(hh));
     csmhit.SetDHorizontalCharge(cdata->GetHorizontal_Charge(hh));
     csmhit.SetDVerticalCharge(cdata->GetVertical_Charge(vv));
@@ -508,6 +510,7 @@ TCSMHit TCSM::MakeHit(int hh, int vv, TCSMData *cdata)
   else if(cdata->GetHorizontal_DetectorPos(hh)=='E')
   {
     //cout<<"MakeHit in E"<<endl;
+    //csmhit.SetTriggerID(cdata->GetHorizontal_Fragment(hh).TriggerId);
     csmhit.SetDetectorNumber(cdata->GetHorizontal_DetectorNbr(hh));
     csmhit.SetEHorizontalCharge(cdata->GetHorizontal_Charge(hh));
     csmhit.SetEVerticalCharge(cdata->GetVertical_Charge(vv));

@@ -41,6 +41,8 @@ class TCSMHit : public TGRSIDetectorHit 	{
 		Int_t 		isotope_mass;
 		TString		isotope_element;
 
+		Int_t		triggerid;
+
 	  	Double_t hor_d_energy;		//		
 	  	Double_t ver_d_energy;		//		
   		Double_t hor_d_time;			//		
@@ -94,7 +96,7 @@ class TCSMHit : public TGRSIDetectorHit 	{
 		Double_t GetDHorizontalTime() const	   {	return hor_d_time;	}	//!
 		Double_t GetDVerticalTime() const		{	return ver_d_time;	}	//!
 
-
+		Int_t GetTriggerID() const		{ return triggerid; }
 
 		Int_t GetEHorizontalStrip() const     {	return	hor_e_strip;	}	//!
 		Int_t GetEVerticalStrip() const   	  {	return	ver_e_strip;	}	//!
@@ -164,7 +166,7 @@ class TCSMHit : public TGRSIDetectorHit 	{
 		inline void SetDPosition(TVector3 tempp)	{ d_position = tempp;	}	//!
 
 
-
+		inline void SetTriggerID(const Int_t tempi)	{ triggerid = tempi; }
 
 
 		inline void SetDHorizontalEnergy(const Double_t tempd) { hor_d_energy = tempd; }
