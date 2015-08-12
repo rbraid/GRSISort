@@ -543,7 +543,7 @@ TCSMHit TCSM::MakeHit(vector<int> &hhV,vector<int> &vvV, TCSMData *cdata)
 
   int DetNumH = cdata->GetHorizontal_DetectorNbr(hhV.at(0));
   char DetPosH = cdata->GetHorizontal_DetectorPos(hhV.at(0));
-  int IDH = cdata->GetHorizontal_Fragment(hhV.at(0))TriggerId;
+  int IDH = cdata->GetHorizontal_Fragment(hhV.at(0)).TriggerId;
   int ChargeH = 0;
   int StripH = -1;
   int ConFraH = 0;
@@ -596,7 +596,7 @@ TCSMHit TCSM::MakeHit(vector<int> &hhV,vector<int> &vvV, TCSMData *cdata)
       cerr<<"\tSomething is wrong, Vertical detector numbers don't match in vector loop."<<endl;
     if(cdata->GetVertical_DetectorPos(vvV.at(iterV))!=DetPosV)
       cerr<<"\tSomething is wrong, Vertical detector positions don't match in vector loop."<<endl;
-    if(cdata->GetVertical_Fragment(vvV.at(iterH)).TriggerId != IDV)
+    if(cdata->GetVertical_Fragment(vvV.at(iterV)).TriggerId != IDV)
       cerr<<"\tSomething is wrong, Vertical trigger IDs don't match in vector loop."<<endl;
     
     ChargeV += cdata->GetVertical_Charge(vvV.at(iterV));
