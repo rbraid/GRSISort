@@ -485,12 +485,13 @@ TCSMHit TCSM::MakeHit(int hh, int vv, TCSMData *cdata)
     cerr<<"\tSomething is wrong, Horizontal and Vertical detector numbers don't match."<<endl;
   if(cdata->GetHorizontal_DetectorPos(hh)!=cdata->GetVertical_DetectorPos(vv))
     cerr<<"\tSomething is wrong, Horizontal and Vertical positions don't match."<<endl;
-
+  if(cdata->GetHorizontal_Fragment(hh).TriggerId!=cdata->GetVertical_Fragment(vv).TriggerId)
+    cerr<<"\tSomething is wrong, Horizontal and Vertical trigger Ids don't match."<<endl;
+  
   if(cdata->GetHorizontal_DetectorPos(hh)=='D')
-  {
+  {    
     //cout<<"MakeHit in D"<<endl;
-    //TFragment TEST = cdata->GetHorizontal_Fragment(hh);
-    //csmhit.SetTriggerID(cdata->GetHorizontal_Fragment(hh).TriggerId);
+    csmhit.SetTriggerID(cdata->GetHorizontal_Fragment(hh).TriggerId);
     csmhit.SetDetectorNumber(cdata->GetHorizontal_DetectorNbr(hh));
     csmhit.SetDHorizontalCharge(cdata->GetHorizontal_Charge(hh));
     csmhit.SetDVerticalCharge(cdata->GetVertical_Charge(vv));
@@ -510,7 +511,7 @@ TCSMHit TCSM::MakeHit(int hh, int vv, TCSMData *cdata)
   else if(cdata->GetHorizontal_DetectorPos(hh)=='E')
   {
     //cout<<"MakeHit in E"<<endl;
-    //csmhit.SetTriggerID(cdata->GetHorizontal_Fragment(hh).TriggerId);
+    csmhit.SetTriggerID(cdata->GetHorizontal_Fragment(hh).TriggerId);
     csmhit.SetDetectorNumber(cdata->GetHorizontal_DetectorNbr(hh));
     csmhit.SetEHorizontalCharge(cdata->GetHorizontal_Charge(hh));
     csmhit.SetEVerticalCharge(cdata->GetVertical_Charge(vv));
@@ -542,6 +543,7 @@ TCSMHit TCSM::MakeHit(vector<int> &hhV,vector<int> &vvV, TCSMData *cdata)
 
   int DetNumH = cdata->GetHorizontal_DetectorNbr(hhV.at(0));
   char DetPosH = cdata->GetHorizontal_DetectorPos(hhV.at(0));
+  int IDH = cdata->GetHorizontal_Fragment(hhV.at(0))TriggerId;
   int ChargeH = 0;
   int StripH = -1;
   int ConFraH = 0;
@@ -553,6 +555,7 @@ TCSMHit TCSM::MakeHit(vector<int> &hhV,vector<int> &vvV, TCSMData *cdata)
 
   int DetNumV = cdata->GetVertical_DetectorNbr(vvV.at(0));
   char DetPosV = cdata->GetVertical_DetectorPos(vvV.at(0));
+  int IDV = cdata->GetVertical_Fragment(vvV.at(0)).TriggerId;
   int ChargeV = 0;
   int StripV = -1;
   int ConFraV = 0;
@@ -571,6 +574,8 @@ TCSMHit TCSM::MakeHit(vector<int> &hhV,vector<int> &vvV, TCSMData *cdata)
       cerr<<"\tSomething is wrong, Horizontal detector numbers don't match in vector loop."<<endl;
     if(cdata->GetHorizontal_DetectorPos(hhV.at(iterH))!=DetPosH)
       cerr<<"\tSomething is wrong, Horizontal detector positions don't match in vector loop."<<endl;
+    if(cdata->GetHorizontal_Fragment(hhV.at(iterH)).TriggerId != IDH)
+      cerr<<"\tSomething is wrong, Horizontal trigger IDs don't match in vector loop."<<endl;
     
     ChargeH += cdata->GetHorizontal_Charge(hhV.at(iterH));
     EnergyH += cdata->GetHorizontal_Energy(hhV.at(iterH));
@@ -591,6 +596,8 @@ TCSMHit TCSM::MakeHit(vector<int> &hhV,vector<int> &vvV, TCSMData *cdata)
       cerr<<"\tSomething is wrong, Vertical detector numbers don't match in vector loop."<<endl;
     if(cdata->GetVertical_DetectorPos(vvV.at(iterV))!=DetPosV)
       cerr<<"\tSomething is wrong, Vertical detector positions don't match in vector loop."<<endl;
+    if(cdata->GetVertical_Fragment(vvV.at(iterH)).TriggerId != IDV)
+      cerr<<"\tSomething is wrong, Vertical trigger IDs don't match in vector loop."<<endl;
     
     ChargeV += cdata->GetVertical_Charge(vvV.at(iterV));
     EnergyV += cdata->GetVertical_Energy(vvV.at(iterV));
@@ -606,9 +613,12 @@ TCSMHit TCSM::MakeHit(vector<int> &hhV,vector<int> &vvV, TCSMData *cdata)
     cerr<<"\tSomething is wrong, Horizontal and Vertical detector numbers don't match in vector."<<endl;
   if(DetPosH!=DetPosV)
     cerr<<"\tSomething is wrong, Horizontal and Vertical positions don't match in vector."<<endl;
+  if(IDV != IDH)
+    cerr<<"\tSomething is wrong, Horizontal and Vertical trigger IDs don't match in vector."<<endl;
   
   if(DetPosH=='D')
   {
+    csmhit.SetTriggerID(IDV);
     csmhit.SetDetectorNumber(DetNumH);
     csmhit.SetDHorizontalCharge(ChargeH);
     csmhit.SetDVerticalCharge(ChargeV);
@@ -627,6 +637,7 @@ TCSMHit TCSM::MakeHit(vector<int> &hhV,vector<int> &vvV, TCSMData *cdata)
   }
   else if(DetPosH=='E')
   {
+    csmhit.SetTriggerID(IDV);
     csmhit.SetDetectorNumber(DetNumH);
     csmhit.SetEHorizontalCharge(ChargeH);
     csmhit.SetEVerticalCharge(ChargeV);

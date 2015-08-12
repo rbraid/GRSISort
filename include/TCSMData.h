@@ -128,14 +128,14 @@ public:
   inline UShort_t GetVertical_DetectorNbr(const unsigned int &i) const {return fCSM_StripVertical_DetectorNbr[i];}	//!
   inline UShort_t GetVertical_DetectorPos(const unsigned int &i) const {return fCSM_StripVertical_DetectorPos[i];}	//!
   inline UShort_t GetVertical_StripNbr(const int &i)    const {return fCSM_StripVertical_StripNbr[i];}		//!
-  inline Double_t GetVertical_Energy(const unsigned int &i)      const {return fCSM_StripHorizontal_Fragment.at(i).GetEnergy();} //!
-  inline Int_t 	GetVertical_Charge(const unsigned int &i)      const {return fCSM_StripHorizontal_Fragment.at(i).GetCharge();} //!
-  inline Int_t    GetVertical_TimeCFD(const unsigned int &i)     const {return fCSM_StripHorizontal_Fragment.at(i).GetCfd();} //!
-  inline Int_t    GetVertical_TimeLED(const unsigned int &i)     const {return fCSM_StripHorizontal_Fragment.at(i).GetLed();} //!
-  inline Double_t GetVertical_Time(const unsigned int &i)        const {return fCSM_StripHorizontal_Fragment.at(i).GetTimeStamp();} //!
-  inline vector<Short_t> GetVertical_Wave(const unsigned int &i) const {return fCSM_StripHorizontal_Fragment.at(i).wavebuffer;} //!
+  inline Double_t GetVertical_Energy(const unsigned int &i)      const {return fCSM_StripVertical_Fragment.at(i).GetEnergy();} //!
+  inline Int_t 	GetVertical_Charge(const unsigned int &i)      const {return fCSM_StripVertical_Fragment.at(i).GetCharge();} //!
+  inline Int_t    GetVertical_TimeCFD(const unsigned int &i)     const {return fCSM_StripVertical_Fragment.at(i).GetCfd();} //!
+  inline Int_t    GetVertical_TimeLED(const unsigned int &i)     const {return fCSM_StripVertical_Fragment.at(i).GetLed();} //!
+  inline Double_t GetVertical_Time(const unsigned int &i)        const {return fCSM_StripVertical_Fragment.at(i).GetTimeStamp();} //!
+  inline vector<Short_t> GetVertical_Wave(const unsigned int &i) const {return fCSM_StripVertical_Fragment.at(i).wavebuffer;} //!
   
-  inline TFragment GetiVertical_Fragment(const unsigned int &i)      const {return fCSM_StripVertical_Fragment.at(i);} //!
+  inline TFragment GetVertical_Fragment(const unsigned int &i)      const {return fCSM_StripVertical_Fragment.at(i);} //!
 
   inline unsigned int GetMultiplicityHorizontal() const {return fCSM_StripHorizontal_DetectorNbr.size();}				//!
   inline unsigned int GetMultiplicityVertical()  const {return fCSM_StripVertical_DetectorNbr.size();}				//!
