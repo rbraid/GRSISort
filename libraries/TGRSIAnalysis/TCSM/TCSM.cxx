@@ -201,63 +201,51 @@ TVector3 TCSM::GetPosition(int detector,char pos, int horizontalstrip, int verti
   //horizontal strips collect N charge!
   //vertical strips collect P charge!
   TVector3 Pos;
-  double SideX = 68;
-  double SideZ = -4.8834;
-  double dEX = 54.9721;
-  double dEZ = 42.948977;
-  double EX = 58.062412;
-  double EZ = 48.09198;
-  double detTheta = 31. * (TMath::Pi()/180.);
+  TRandom3 *rndm = new TRandom3(0);
+  double detTheta = -31. * (TMath::Pi()/180.);
+  double SideX = 64.62;
+  double SideZ = 2.05;
+  double dER = 62.14;
+  double ER = 75.35;
   double x = 0.0,y = 0.0,z = 0.0;
+
+  if(detector == 1)
+    detTheta = -detTheta;
+  if(pos=='E')
+    verticalstrip=15-verticalstrip;
+
+  x = (50./32.)*(2*verticalstrip+1) - (50./16.)*8 + rndm->Uniform(-50./16.,50./16.);
+  y = (50./32.)*(2*horizontalstrip+1) - (50/16.)*8 + rndm->Uniform(-50./16.,50./16.);
+  
+  if(pos=='D')
+    z = dER;
+  else
+    z = ER;
+
+  //rotate into proper coordinates
+  //z' = z*cos q - x*sin q
+  //x' = z*sin q + x*cos q
+
+  double xp = z*sin(detTheta) + x*cos(detTheta);
+  double zp = z*cos(detTheta) - x*sin(detTheta);
 
   if(detector==3&&pos=='D')
   {
     //Right Side
     verticalstrip=15-verticalstrip;
-    x = SideX;
-    z = SideZ + (50./32.)*(2*verticalstrip+1);
+    xp = SideX;
+    zp = SideZ + (50./32.)*(2*verticalstrip+1) - (50/16.)*8 + rndm->Uniform(-50./16.,50./16.);
   }
   else if(detector==4&&pos=='D')
   {
     //Left Side
-    x = -SideX;
-    z = SideZ + (50./32.)*(2*verticalstrip+1);
-  }
-  else if(detector==1&&pos=='D')
-  {
-    //Right dE
-    verticalstrip=15-verticalstrip;
-    x = dEX - (50./32.)*cos(detTheta)*(2*verticalstrip+1);
-    z = dEZ + (50./32.)*sin(detTheta)*(2*verticalstrip+1);
-  }
-  else if(detector==2&&pos=='D')
-  {
-    //Left dE
-    x = -dEX + (50./32.)*cos(detTheta)*(2*verticalstrip+1);
-    z = dEZ + (50./32.)*sin(detTheta)*(2*verticalstrip+1);
-  }
-  else if(detector==1&&pos=='E')
-  {
-    //Right E
-    x = EX - (50./32.)*cos(detTheta)*(2*verticalstrip+1);
-    z = EZ + (50./32.)*sin(detTheta)*(2*verticalstrip+1);
-  }
-  else if(detector==2&&pos=='E')
-  {
-    //Left E
-    verticalstrip=15-verticalstrip;
-    x = -EX + (50./32.)*cos(detTheta)*(2*verticalstrip+1);
-    z = EZ + (50./32.)*sin(detTheta)*(2*verticalstrip+1);
-  }
-  else
-  {
-    printf("***Error, unrecognized detector and position combo!***\n");
+    xp = -SideX;
+    zp = SideZ + (50./32.)*(2*verticalstrip+1) - (50/16.)*8 + rndm->Uniform(-50./16.,50./16.);
   }
 
-  y = (50./32.)*(2*horizontalstrip+1) - (50/16.)*8;
-  Pos.SetX(x + X);
+  Pos.SetX(xp + X);
   Pos.SetY(y + Y);
-  Pos.SetZ(z+ Z);
+  Pos.SetZ(zp+ Z);
   return(Pos);
 }
 

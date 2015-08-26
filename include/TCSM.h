@@ -28,6 +28,7 @@ class TCSMData;
 
 #include "TMath.h"
 #include "TVector3.h"
+#include "TRandom3.h"
 
 #include "TGRSIDetector.h"
 
