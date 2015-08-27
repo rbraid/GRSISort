@@ -214,8 +214,8 @@ TVector3 TCSM::GetPosition(int detector,char pos, int horizontalstrip, int verti
   if(pos=='E')
     verticalstrip=15-verticalstrip;
 
-  x = (50./32.)*(2*verticalstrip+1) - (50./16.)*8 + rndm->Uniform(-50./16.,50./16.);
-  y = (50./32.)*(2*horizontalstrip+1) - (50/16.)*8 + rndm->Uniform(-50./16.,50./16.);
+  x = (50./32.)*(2*verticalstrip+1) - (50./16.)*8 + rndm->Uniform(-50./32.,50./32.);
+  y = (50./32.)*(2*horizontalstrip+1) - (50/16.)*8 + rndm->Uniform(-50./32.,50./32.);
   
   if(pos=='D')
     z = dER;
@@ -234,13 +234,13 @@ TVector3 TCSM::GetPosition(int detector,char pos, int horizontalstrip, int verti
     //Right Side
     verticalstrip=15-verticalstrip;
     xp = SideX;
-    zp = SideZ + (50./32.)*(2*verticalstrip+1) - (50/16.)*8 + rndm->Uniform(-50./16.,50./16.);
+    zp = SideZ + (50./32.)*(2*verticalstrip+1) - (50/16.)*8 + rndm->Uniform(-50./32.,50./32.);
   }
   else if(detector==4&&pos=='D')
   {
     //Left Side
     xp = -SideX;
-    zp = SideZ + (50./32.)*(2*verticalstrip+1) - (50/16.)*8 + rndm->Uniform(-50./16.,50./16.);
+    zp = SideZ + (50./32.)*(2*verticalstrip+1) - (50/16.)*8 + rndm->Uniform(-50./32.,50./32.);
   }
 
   Pos.SetX(xp + X);
