@@ -70,7 +70,7 @@ void TCSMHit::SetIsotope(TString Info)
   isotope_element = Element;
 }
 
-TString TCSMHit::GetIsotope()
+TString TCSMHit::GetIsotope() const
 {
   TString returnedString;
 
@@ -353,6 +353,7 @@ void TCSMHit::Print(Option_t *options) const	{
   std::cout<<"Printing TCSMHit:  Horizontal    Vertical"<<std::endl;
   std::cout<<"Detector number: "<<GetDetectorNumber()<<std::endl;
   std::cout<<"TriggerID: "<<GetTriggerID()<<std::endl;
+  std::cout<<"Isotope: "<<GetIsotope()<<std::endl;
   //std::cout<<"Detector position: "<<GetDetectorPosition()<<std::endl;
   std::cout<<"D"<<std::endl;
   std::cout<<"Strip: "<<GetDHorizontalStrip()<<" "<<GetDVerticalStrip()<<std::endl;
