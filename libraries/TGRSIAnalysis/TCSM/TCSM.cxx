@@ -250,7 +250,21 @@ TVector3 TCSM::GetPosition(int detector,char pos, int horizontalstrip, int verti
 }
 
 void TCSM::BuildVH(vector<int> &vvec,vector<int> &hvec,vector<TCSMHit> &hitvec,TCSMData *cdataVH)
-{  
+{
+  bool DEBUGVH = 0;
+
+//   if(hvec.size()!=0)
+//     if(cdataVH->GetHorizontal_Fragment(hvec.at(0)).TriggerId == 119224 || cdataVH->GetHorizontal_Fragment(hvec.at(0)).TriggerId == 64917)
+//       DEBUGVH = 1;
+
+  if(DEBUGVH)
+  {
+    cout<<endl<<DGREEN<<"DEBUGVH active"<<RESET_COLOR<<endl;
+    cout<<DYELLOW<<"In Detector: "<<RESET_COLOR<<cdataVH->GetHorizontal_DetectorNbr(hvec.at(0))<<char(cdataVH->GetHorizontal_DetectorPos(hvec.at(0)))<<endl;
+    cdataVH->Print();
+    cout<<endl;
+  }
+  
   if(vvec.size()==0 && hvec.size()==0)
     return;
 
@@ -328,18 +342,33 @@ void TCSM::BuildVH(vector<int> &vvec,vector<int> &hvec,vector<TCSMHit> &hitvec,T
   }
 
   else if(vvec.size()==2&&hvec.size()==2)
-  {    
+  {
     int ve1 = cdataVH->GetVertical_Energy(vvec.at(0));
     int ve2 = cdataVH->GetVertical_Energy(vvec.at(1));
     int he1 = cdataVH->GetHorizontal_Energy(hvec.at(0));
     int he2 = cdataVH->GetHorizontal_Energy(hvec.at(1));
+
+    if(DEBUGVH)
+    {
+      cout<<"vvec.size()==2&&hvec.size()==2"<<endl;
+      cout<<"ve1: "<<ve1<<" ve2: "<<ve2<<endl;
+      cout<<"he1: "<<he1<<" he2: "<<he2<<endl;
+
+      cout<<"AlmostEqual(ve1,he1): "<<AlmostEqual(ve1,he1)<<endl;
+      cout<<"AlmostEqual(ve2,he2): "<<AlmostEqual(ve2,he2)<<endl;
+      cout<<"AlmostEqual(ve1,he2): "<<AlmostEqual(ve1,he2)<<endl;
+      cout<<"AlmostEqual(ve2,he1): "<<AlmostEqual(ve2,he1)<<endl;
+    }
     
-    if( (AlmostEqual(ve1,he1) && AlmostEqual(ve2,he2)) || (AlmostEqual(ve1,he2) && AlmostEqual(ve2,he1)) )
+    //if( (AlmostEqual(ve1,he1) && AlmostEqual(ve2,he2)) || (AlmostEqual(ve1,he2) && AlmostEqual(ve2,he1))  )
     {
       //I can build both 1,1 and 2,2 or 1,2 and 2,1
       if(abs(ve1-he1)+abs(ve2-he2) <= abs(ve1-he2)+abs(ve2-he1))
       {
 	//1,1 and 2,2 mimimizes difference
+	if(DEBUGVH)
+	  cout<<"Building 1,1 and 2,2"<<endl;
+	
 	hitvec.push_back(MakeHit(hvec.at(0),vvec.at(0),cdataVH));
 	hitvec.push_back(MakeHit(hvec.at(1),vvec.at(1),cdataVH));
 	hvec.clear();
@@ -348,36 +377,51 @@ void TCSM::BuildVH(vector<int> &vvec,vector<int> &hvec,vector<TCSMHit> &hitvec,T
       else if(abs(ve1-he1)+abs(ve2-he2) > abs(ve1-he2)+abs(ve2-he1))
       {
 	//1,2 and 2,1 mimimizes difference
+	if(DEBUGVH)
+	  cout<<"Building 1,2 and 2,1"<<endl;
+	
 	hitvec.push_back(MakeHit(hvec.at(0),vvec.at(1),cdataVH));
 	hitvec.push_back(MakeHit(hvec.at(1),vvec.at(0),cdataVH));
 	hvec.clear();
 	vvec.clear();
       }
     }
-    else if( AlmostEqual(ve1,he1) )
-    {
-      hitvec.push_back(MakeHit(hvec.at(0),vvec.at(0),cdataVH));
-      hvec.erase(hvec.begin());
-      vvec.erase(vvec.begin());
-    }
-    else if( AlmostEqual(ve2,he1) )
-    {
-      hitvec.push_back(MakeHit(hvec.at(1),vvec.at(0),cdataVH));
-      hvec.erase(hvec.begin());
-      vvec.pop_back();
-    }
-    else if( AlmostEqual(ve1,he2) )
-    {
-      hitvec.push_back(MakeHit(hvec.at(0),vvec.at(1),cdataVH));
-      hvec.pop_back();
-      vvec.erase(vvec.begin());
-    }
-    else if( AlmostEqual(ve2,he2) )
-    {
-      hitvec.push_back(MakeHit(hvec.at(1),vvec.at(1),cdataVH));
-      hvec.pop_back();
-      vvec.pop_back();
-    }
+//     else if( AlmostEqual(ve1,he1) )
+//     {
+//       if(DEBUGVH)
+// 	cout<<"Building 1,1"<<endl;
+//       
+//       hitvec.push_back(MakeHit(hvec.at(0),vvec.at(0),cdataVH));
+//       hvec.erase(hvec.begin());
+//       vvec.erase(vvec.begin());
+//     }
+//     else if( AlmostEqual(ve2,he1) )
+//     {
+//       if(DEBUGVH)
+// 	cout<<"Building 2,1"<<endl;
+//       hvec.pop_back();
+//       vvec.erase(vvec.begin());
+//       hitvec.push_back(MakeHit(hvec.at(1),vvec.at(0),cdataVH));
+
+//     }
+//     else if( AlmostEqual(ve1,he2) )
+//     {
+//       if(DEBUGVH)
+// 	cout<<"Building 1,2"<<endl;
+//       
+//       hitvec.push_back(MakeHit(hvec.at(0),vvec.at(1),cdataVH));
+//       hvec.erase(hvec.begin());
+//       vvec.pop_back();
+//     }
+//     else if( AlmostEqual(ve2,he2) )
+//     {
+//       if(DEBUGVH)
+// 	cout<<"Building 2,2"<<endl;
+//       
+//       hitvec.push_back(MakeHit(hvec.at(1),vvec.at(1),cdataVH));
+//       hvec.pop_back();
+//       vvec.pop_back();
+//     }
   }
   /*
   else if(vvec.size()==3&&hvec.size()==3)
@@ -459,6 +503,9 @@ void TCSM::BuildVH(vector<int> &vvec,vector<int> &hvec,vector<TCSMHit> &hitvec,T
       cout<<DRED<<vvec.at(iter)<<RESET_COLOR<<endl;
     }
   }*/
+
+  if(DEBUGVH)
+    cout<<endl;
   
 }
 
