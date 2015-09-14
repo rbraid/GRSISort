@@ -769,7 +769,7 @@ void TCSM::MakedEE(vector<TCSMHit> &DHitVec,vector<TCSMHit> &EHitVec,vector<TCSM
     BuiltHits.push_back(EHitVec.at(0));
     BuiltHits.push_back(EHitVec.at(1));
   }
-  else if(DHitVec.size()==2 && EHitVec.size()==1)
+  /*else if(DHitVec.size()==2 && EHitVec.size()==1)
   {
     double dt1 = DHitVec.at(0).GetDPosition().Theta();
     double dt2 = DHitVec.at(1).GetDPosition().Theta();
@@ -793,7 +793,7 @@ void TCSM::MakedEE(vector<TCSMHit> &DHitVec,vector<TCSMHit> &EHitVec,vector<TCSM
       //BuiltHits.back().Print();
       //cout<<RESET_COLOR;
     }
-  }
+  }*/
   else if(DHitVec.size()==1 && EHitVec.size()==2)
   {
     double dt = DHitVec.at(0).GetDPosition().Theta();
