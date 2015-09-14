@@ -778,18 +778,18 @@ void TCSM::MakedEE(vector<TCSMHit> &DHitVec,vector<TCSMHit> &EHitVec,vector<TCSM
     if( abs(dt1-et) <= abs(dt2-et) )
     {
       //cout<<DRED;
-      BuiltHits.push_back(CombineHits(DHitVec.at(1),EHitVec.at(0)));
+      BuiltHits.push_back(CombineHits(DHitVec.at(0),EHitVec.at(0)));
       //BuiltHits.back().Print();
-      BuiltHits.push_back(DHitVec.at(0));
+      BuiltHits.push_back(DHitVec.at(1));
       //BuiltHits.back().Print();
       //cout<<RESET_COLOR;
     }
     else
     {
       //cout<<DBLUE;
-      BuiltHits.push_back(CombineHits(DHitVec.at(0),EHitVec.at(0)));
+      BuiltHits.push_back(CombineHits(DHitVec.at(1),EHitVec.at(0)));
       //BuiltHits.back().Print();
-      BuiltHits.push_back(DHitVec.at(1));
+      BuiltHits.push_back(DHitVec.at(0));
       //BuiltHits.back().Print();
       //cout<<RESET_COLOR;
     }
