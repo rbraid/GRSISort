@@ -1,7 +1,7 @@
 #include <TMath.h>
 #include "TCSM.h"
-#define RECOVERHITS 0
-#define SUMHITS 0
+#define RECOVERHITS 1
+#define SUMHITS 1
 
 ClassImp(TCSM)
 
@@ -11,7 +11,7 @@ TCSM::TCSM() : data(0)
 {
   Class()->IgnoreTObjectStreamer(true);
   //InitializeSRIMInputs();
-  AlmostEqualWindow = .2;
+  AlmostEqualWindow = .3;
 }
 
 TCSM::~TCSM()
@@ -360,7 +360,7 @@ void TCSM::BuildVH(vector<int> &vvec,vector<int> &hvec,vector<TCSMHit> &hitvec,T
       cout<<"AlmostEqual(ve2,he1): "<<AlmostEqual(ve2,he1)<<endl;
     }
     
-    //if( (AlmostEqual(ve1,he1) && AlmostEqual(ve2,he2)) || (AlmostEqual(ve1,he2) && AlmostEqual(ve2,he1))  )
+    if( (AlmostEqual(ve1,he1) && AlmostEqual(ve2,he2)) || (AlmostEqual(ve1,he2) && AlmostEqual(ve2,he1))  )
     {
       //I can build both 1,1 and 2,2 or 1,2 and 2,1
       if(abs(ve1-he1)+abs(ve2-he2) <= abs(ve1-he2)+abs(ve2-he1))
@@ -750,6 +750,8 @@ void TCSM::BuilddEE(vector<TCSMHit> &DHitVec,vector<TCSMHit> &EHitVec,vector<TCS
 
 void TCSM::MakedEE(vector<TCSMHit> &DHitVec,vector<TCSMHit> &EHitVec,vector<TCSMHit> &BuiltHits)
 {
+  bool DEBUGDEE = 0;
+  
 
   if(DHitVec.size()==0 && EHitVec.size()==0)
     return;
@@ -769,31 +771,54 @@ void TCSM::MakedEE(vector<TCSMHit> &DHitVec,vector<TCSMHit> &EHitVec,vector<TCSM
     BuiltHits.push_back(EHitVec.at(0));
     BuiltHits.push_back(EHitVec.at(1));
   }
-  /*else if(DHitVec.size()==2 && EHitVec.size()==1)
+  else if(DHitVec.size()==2 && EHitVec.size()==1)
   {
+    if(DEBUGDEE)
+      cout<<"DEE 2,1"<<endl;
+    
     double dt1 = DHitVec.at(0).GetDPosition().Theta();
     double dt2 = DHitVec.at(1).GetDPosition().Theta();
     double et = EHitVec.at(0).GetEPosition().Theta();
 
+    if(DEBUGDEE)
+      cout<<"dt1: "<<dt1<<" dt2: "<<dt2<<" et: "<<et<<endl;
+    
+
     if( abs(dt1-et) <= abs(dt2-et) )
     {
-      //cout<<DRED;
-      BuiltHits.push_back(CombineHits(DHitVec.at(0),EHitVec.at(0)));
-      //BuiltHits.back().Print();
+      if(DEBUGDEE)
+	cout<<DRED;
+      
+      if(DEBUGDEE)
+	BuiltHits.back().Print();
       BuiltHits.push_back(DHitVec.at(1));
-      //BuiltHits.back().Print();
-      //cout<<RESET_COLOR;
+      BuiltHits.push_back(CombineHits(DHitVec.at(0),EHitVec.at(0)));
+      
+      if(DEBUGDEE)
+      {
+	BuiltHits.back().Print();
+	cout<<RESET_COLOR;
+	cout<<"Making dt1 and et"<<endl;
+      }
     }
     else
     {
-      //cout<<DBLUE;
-      BuiltHits.push_back(CombineHits(DHitVec.at(1),EHitVec.at(0)));
-      //BuiltHits.back().Print();
+      if(DEBUGDEE)
+	cout<<DBLUE;
+      
+      if(DEBUGDEE)
+	BuiltHits.back().Print();
       BuiltHits.push_back(DHitVec.at(0));
-      //BuiltHits.back().Print();
-      //cout<<RESET_COLOR;
+      BuiltHits.push_back(CombineHits(DHitVec.at(1),EHitVec.at(0)));
+      
+      if(DEBUGDEE)
+      {
+	BuiltHits.back().Print();
+	cout<<RESET_COLOR;
+	cout<<"Making dt2 and et"<<endl<<endl;
+      }
     }
-  }*/
+  }
   else if(DHitVec.size()==1 && EHitVec.size()==2)
   {
     double dt = DHitVec.at(0).GetDPosition().Theta();
