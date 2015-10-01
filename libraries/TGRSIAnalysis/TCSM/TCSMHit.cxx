@@ -407,3 +407,41 @@ bool TCSMHit::IsEmpty()
 					    isempty = 1;
   return isempty;
 }
+
+Double_t TCSMHit::GetMassMeV() const
+{
+  double mass = -1.;
+
+  const double MEVpNUC = 931.494061;
+  const double MASS_BE8 = 8*MEVpNUC+4.9416;
+  const double MASS_BE12 = 12*MEVpNUC+25.0766;
+  const double MASS_BE9 = 9*MEVpNUC+11.3484;
+  const double MASS_BE11 = 11*MEVpNUC+20.1771;
+  const double MASS_HE4 = 4*MEVpNUC+2.4249;
+  const double MASS_C12 = 12*MEVpNUC;
+  const double MASS_C13 = 13*MEVpNUC+3.1250;
+  const double MASS_BE10 = 10*MEVpNUC+12.6074;
+
+  if(GetIsotope()=="default")
+    std::cerr<<"Error: GetMassMeV for an unset Isotope, returning -1"<<std::endl;
+  else if(GetIsotope()=="8be")
+    mass=MASS_BE8;
+  else if(GetIsotope()=="12be")
+    mass=MASS_BE12;
+  else if(GetIsotope()=="9be")
+    mass=MASS_BE9;
+  else if(GetIsotope()=="11be")
+    mass=MASS_BE11;
+  else if(GetIsotope()=="4he")
+    mass=MASS_HE4;
+  else if(GetIsotope()=="c12")
+    mass=MASS_C12;
+  else if(GetIsotope()=="c13")
+    mass=MASS_C13;
+  else if(GetIsotope()=="10be")
+    mass=MASS_BE10;
+  else
+    std::cerr<<"Error: GetMassMeV for an unsupported isotope, returning -1"<<std::endl;
+
+  return mass;
+}
