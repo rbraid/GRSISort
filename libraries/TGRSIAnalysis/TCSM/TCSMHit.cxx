@@ -118,6 +118,39 @@ Double_t TCSMHit::GetCorrectedEnergyMeV()
   return((E+elost));
 }
 
+Double_t TCSMHit::GetCorrectedEnergyMeV(TString tempIsotope)
+{
+  bool debugCE = 0;
+  
+  Double_t E = GetEnergyMeV();  //Go from keV to MeV
+  
+  if(debugCE) std::cout<<"My initial energy is: "<<E<<" MeV"<<std::endl;
+  double effthick = 2.4/1000.; //This function uses mm not um.
+  effthick = effthick/2; //We assume we only go through half on average.
+  if(debugCE) std::cout<<"Half of the thickness of the Target is: "<<effthick<<" mm"<<std::endl;
+  effthick = effthick/cos(GetTheta()); //This takes into account the angle effect, the minimum is perpindicular
+  if(debugCE) std::cout<<"The effective thickness is: "<<effthick<<" mm, due to an angle of: "<<GetThetaDeg()<<" degrees"<<std::endl;
+  
+  Double_t elost = -10.;
+
+  tempIsotope.ToLower();
+
+  if(debugCE) std::cout<<"tempIsotope is: "<<tempIsotope<<std::endl;
+  
+  if(tempIsotope=="11be")
+    elost = 1080.85*effthick - 33.4462*pow(effthick,2) + 0.92379*pow(effthick,3) - 0.0160147*pow(effthick,4) + 0.0001199256*pow(effthick,5);
+  else if(tempIsotope=="12be")
+    elost = 1208.8*effthick - 41.8894*pow(effthick,2) + 1.25691*pow(effthick,3) - 0.0223553*pow(effthick,4) + 0.0001661186*pow(effthick,5);
+  else if(tempIsotope=="4he")
+    elost = 166.114*effthick - 6.2685*pow(effthick,2) + 0.168201*pow(effthick,3) - 0.002540775*pow(effthick,4) + 0.00001618362*pow(effthick,5);
+  else
+    elost = -100;
+  
+  if(debugCE) std::cout<<"My energy lost is: "<<elost<<" MeV"<<std::endl;
+  
+  return((E+elost));
+}
+
 bool TCSMHit::IsotopeSet()
 {
   if(GetIsotope() == "default")

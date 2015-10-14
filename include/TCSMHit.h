@@ -125,6 +125,7 @@ class TCSMHit : public TGRSIDetectorHit 	{
 		Double_t GetTheta() const 		{return GetDPosition().Theta();}
 		TString GetIsotope() const;
 		Double_t GetCorrectedEnergyMeV();
+		Double_t GetCorrectedEnergyMeV(TString);
 		Double_t GetCorrectedEnergy()		{return GetCorrectedEnergyMeV()*1000.;}
 		bool IsotopeSet();
 		Double_t GetMassMeV() const;
