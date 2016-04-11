@@ -165,11 +165,11 @@ void TGRSIRunInfo::Print(Option_t *opt) {
 
 void TGRSIRunInfo::Clear(Option_t *opt) {
    
-   fTigress = false;
+   fTigress = true;
    fSharc = false;
    fTriFoil = false;
    fRf = false;
-   fCSM = false;
+   fCSM = true;
    fSpice = false;
    fTip = false;
    fS3 = false;
@@ -184,7 +184,7 @@ void TGRSIRunInfo::Clear(Option_t *opt) {
    fMajorIndex.assign("");  
    fMinorIndex.assign("");  
 
-   fNumberOfTrueSystems = 0;
+   fNumberOfTrueSystems = 2;
    
 }
 
