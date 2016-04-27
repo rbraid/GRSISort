@@ -86,36 +86,13 @@ TString TCSMHit::GetIsotope() const
 
 Double_t TCSMHit::GetCorrectedEnergyMeV()
 {
-  bool debugCE = 0;
   if(!IsotopeSet())
   {
     std::cerr<<" Caution: Correcting Energy when Isotope isn't set!"<<std::endl;
     return(GetEnergyMeV());
   }
-  
-  Double_t E = GetEnergyMeV();  //Go from keV to MeV
-  
-  if(debugCE) std::cout<<"My initial energy is: "<<E<<" MeV"<<std::endl;
-  double effthick = 2.4/1000.; //This function uses mm not um.
-  effthick = effthick/2; //We assume we only go through half on average.
-  if(debugCE) std::cout<<"Half of the thickness of the Target is: "<<effthick<<" mm"<<std::endl;
-  effthick = effthick/cos(GetTheta()); //This takes into account the angle effect, the minimum is perpindicular
-  if(debugCE) std::cout<<"The effective thickness is: "<<effthick<<" mm, due to an angle of: "<<GetThetaDeg()<<" degrees"<<std::endl;
-  
-  Double_t elost = -10.;
-  
-  if(GetIsotope()=="11be")
-    elost = 1080.85*effthick - 33.4462*pow(effthick,2) + 0.92379*pow(effthick,3) - 0.0160147*pow(effthick,4) + 0.0001199256*pow(effthick,5);
-  else if(GetIsotope()=="12be")
-    elost = 1208.8*effthick - 41.8894*pow(effthick,2) + 1.25691*pow(effthick,3) - 0.0223553*pow(effthick,4) + 0.0001661186*pow(effthick,5);
-  else if(GetIsotope()=="4he")
-    elost = 166.114*effthick - 6.2685*pow(effthick,2) + 0.168201*pow(effthick,3) - 0.002540775*pow(effthick,4) + 0.00001618362*pow(effthick,5);
-  else
-    elost = -100;
-  
-  if(debugCE) std::cout<<"My energy lost is: "<<elost<<" MeV"<<std::endl;
-  
-  return((E+elost));
+
+  return( GetCorrectedEnergyMeV(GetIsotope()));
 }
 
 Double_t TCSMHit::GetCorrectedEnergyMeV(TString tempIsotope)
@@ -126,27 +103,106 @@ Double_t TCSMHit::GetCorrectedEnergyMeV(TString tempIsotope)
   
   if(debugCE) std::cout<<"My initial energy is: "<<E<<" MeV"<<std::endl;
   double effthick = 2.4/1000.; //This function uses mm not um.
-  effthick = effthick/2; //We assume we only go through half on average.
+  effthick = effthick/2.; //We assume we only go through half on average.
   if(debugCE) std::cout<<"Half of the thickness of the Target is: "<<effthick<<" mm"<<std::endl;
   effthick = effthick/cos(GetTheta()); //This takes into account the angle effect, the minimum is perpindicular
   if(debugCE) std::cout<<"The effective thickness is: "<<effthick<<" mm, due to an angle of: "<<GetThetaDeg()<<" degrees"<<std::endl;
   
-  Double_t elost = -10.;
+  Double_t elost = 0.;
 
   tempIsotope.ToLower();
 
   if(debugCE) std::cout<<"tempIsotope is: "<<tempIsotope<<std::endl;
+
+  double Energy[56]={0.5	,0.55	,0.6	,0.65	,0.7	,0.8	,0.9	,1	,1.1	,1.2	,1.3	,1.4	,1.5	,1.6	,1.7	,1.8	,2	,2.25	,2.5	,2.75	,3	,3.25	,3.5	,3.75	,4	,4.5	,5	,5.5	,6	,6.5	,7	,8	,9	,10	,11	,12	,13	,14	,15	,16	,17	,18	,20	,22.5	,25	,27.5	,30	,32.5	,35	,37.5	,40	,45	,50	,55	,60	,65};
+
+  double StoppingPower[56];
   
-  if(tempIsotope=="11be")
-    elost = 1080.85*effthick - 33.4462*pow(effthick,2) + 0.92379*pow(effthick,3) - 0.0160147*pow(effthick,4) + 0.0001199256*pow(effthick,5);
-  else if(tempIsotope=="12be")
-    elost = 1208.8*effthick - 41.8894*pow(effthick,2) + 1.25691*pow(effthick,3) - 0.0223553*pow(effthick,4) + 0.0001661186*pow(effthick,5);
-  else if(tempIsotope=="4he")
-    elost = 166.114*effthick - 6.2685*pow(effthick,2) + 0.168201*pow(effthick,3) - 0.002540775*pow(effthick,4) + 0.00001618362*pow(effthick,5);
+  
+  if(tempIsotope == "12be")
+  {
+    double tmpArray[] = {512.028	,533.013	,552.56	,570.855	,588.089	,619.747	,647.792	,672.902	,695.36	,715.354	,733.176	,749.022	,763.086	,775.566	,786.658	,796.362	,812.395	,826.925	,836.586	,842.37	,845.172	,845.488	,843.915	,840.851	,836.4942	,825.1983	,811.4202	,796.2553	,780.3004	,764.0534	,747.7126	,715.8453	,685.392	,656.7487	,630.0127	,605.1823	,582.0563	,560.5338	,540.6141	,521.8967	,504.5812	,488.2674	,458.7436	,426.6194	,398.8998	,371.9836	,346.7699	,326.2582	,308.048	,291.7392	,277.1314	,252.0182	,231.1076	,213.39875	,198.29132	,185.18498};
+
+    for(int i=0; i<56;i++)
+      StoppingPower[i] = tmpArray[i];
+  }
+
+  else if(tempIsotope ==  "11be")
+  {
+    double tmpArray[] = {531.108	,552.523	,572.496	,591.213	,608.667	,640.557	,668.629	,693.46	,715.335	,734.644	,751.68	,766.637	,779.812	,791.2	,801.201	,809.812	,823.458	,835.2	,842.072	,845.165	,845.474	,843.496	,839.729	,834.6697	,828.5174	,814.0288	,797.6567	,780.2967	,762.5461	,744.7026	,727.265	,693.4029	,661.7537	,632.3137	,605.0805	,579.9525	,556.7285	,535.3077	,515.3895	,496.9735	,479.7592	,463.8464	,434.8245	,403.7022	,374.3841	,346.7691	,324.4565	,304.8457	,287.5364	,272.1282	,258.321	,234.5089	,214.79908	,198.19095	,183.98411	,171.77826};
+
+    for(int i=0; i<56;i++)
+      StoppingPower[i] = tmpArray[i];
+  }
+
+  else if(tempIsotope ==  "10be")
+  {
+    double tmpArray[] = {552.679	,574.526	,594.924	,613.865	,631.538	,663.361	,691.26	,715.513	,736.607	,755.032	,770.881	,784.65	,796.534	,806.632	,815.141	,822.359	,833.318	,841.573	,845.156	,845.358	,842.775	,838.303	,832.2416	,825.0874	,817.0394	,799.1583	,780.0922	,760.5373	,741.0909	,721.8512	,703.2167	,667.6598	,634.9148	,604.8782	,577.3478	,552.1222	,529.0002	,507.6812	,488.0646	,469.8499	,453.0369	,437.4252	,409.2051	,377.1847	,346.5682	,322.1545	,301.043	,282.6331	,266.3246	,251.8171	,238.8105	,216.49946	,198.09048	,182.58306	,169.3768	,158.07146};
+
+    for(int i=0; i<56;i++)
+      StoppingPower[i] = tmpArray[i];
+  }
+
+  else if(tempIsotope ==  "9be")
+  {
+    double tmpArray[] = {576.847	,599.224	,619.85	,638.913	,656.607	,688.263	,715.489	,738.764	,758.677	,775.717	,790.18	,802.261	,812.456	,820.863	,827.78	,833.306	,840.877	,845.146	,845.139	,841.95	,836.3748	,829.2101	,820.6539	,811.3047	,801.2611	,780.0875	,758.4275	,736.7777	,715.5356	,695.0995	,675.3683	,638.4167	,604.8758	,574.4426	,546.8151	,521.6918	,498.772	,477.7547	,458.5397	,440.8264	,424.4145	,409.2039	,380.7857	,346.5673	,319.6523	,296.7399	,276.9294	,259.6205	,244.4128	,230.906	,218.8	,198.09002	,181.08189	,166.77516	,154.6695	,144.26466};
+
+    for(int i=0; i<56;i++)
+      StoppingPower[i] = tmpArray[i];
+  }
+
+  else if(tempIsotope ==  "4he")
+  {
+    double tmpArray[] = {334.9847	,333.9397	,332.0014	,329.3686	,326.24	,319.0928	,311.1552	,302.9246	,294.6991	,286.5775	,278.759	,271.143	,263.9289	,256.9165	,250.3054	,243.9955	,232.1783	,219.061	,207.3468	,196.8351	,187.5252	,179.0167	,171.4093	,164.4029	,158.09719	,146.8876	,137.37981	,129.07335	,121.86791	,115.56325	,109.95922	,100.35259	,92.04735	,84.3531	,78.32958	,73.18662	,68.73408	,64.84189	,61.40998	,58.35829	,55.62679	,53.15545	,48.87314	,44.48081	,40.86893	,37.84736	,35.28605	,33.06493	,31.13396	,29.44311	,27.93237	,25.38111	,23.2801	,21.539261	,20.058556	,18.787954};
+
+    for(int i=0; i<56;i++)
+      StoppingPower[i] = tmpArray[i];
+  }
+
+  else if(tempIsotope ==  "6he")
+  {
+    double tmpArray[] = {327.3591	,330.7931	,333.1372	,334.4891	,335.0473	,334.478	,332.1229	,328.478	,324.1406	,319.2089	,313.9818	,308.6582	,303.1375	,297.6192	,292.2029	,286.8883	,276.4632	,264.1376	,252.7167	,242.1994	,232.4848	,223.4723	,215.2615	,207.552	,200.4436	,187.7295	,176.618	,166.9085	,158.3004	,150.69357	,143.78762	,131.87783	,122.07009	,113.76381	,106.65861	,100.45423	,94.98048	,89.46724	,84.51441	,80.38191	,76.6697	,73.31771	,67.5143	,61.53085	,56.60806	,52.48575	,48.9738	,45.93214	,43.29071	,40.94945	,38.87835	,35.35649	,32.46499	,30.04374	,27.9927	,26.22181};
+
+    for(int i=0; i<56;i++)
+      StoppingPower[i] = tmpArray[i];
+  }
+
+  else if(tempIsotope ==  "13c")
+  {
+    double tmpArray[] = {796.23	,830.35	,861.89	,891.04	,918.164	,967.008	,1009.741	,1047.111	,1080.582	,1110.133	,1136.745	,1160.407	,1182.109	,1200.845	,1218.608	,1234.395	,1261.028	,1288.651	,1309.344	,1325.087	,1336.869	,1345.682	,1351.519	,1355.376	,1356.249	,1356.035	,1349.86	,1340.715	,1329.591	,1315.486	,1301.394	,1270.242	,1237.122	,1204.024	,1170.9427	,1138.8739	,1107.815	,1078.764	,1049.7193	,1022.6798	,996.5446	,971.7131	,925.3589	,873.1039	,826.4592	,784.4221	,740.8908	,699.8641	,665.8409	,635.1207	,607.3028	,558.4727	,517.1483	,481.828	,451.111	,424.2964};
+
+    for(int i=0; i<56;i++)
+      StoppingPower[i] = tmpArray[i];
+  }
+
   else
-    elost = -100;
-  
-  if(debugCE) std::cout<<"My energy lost is: "<<elost<<" MeV"<<std::endl;
+  {
+    std::cerr<<"Unsupported Isotope in Energy Correction: "<<tempIsotope<<std::endl;
+    return(GetEnergyMeV());
+  }
+
+
+  //TGraph *stGraph = new TGraph(56, Energy, StoppingPower);
+  TSpline3 *spline = new TSpline3("myspline", Energy, StoppingPower, 56);
+
+  if(debugCE) std::cout<<"Linear Approx is: "<<spline->Eval(E)*effthick<<" MeV"<<std::endl;
+
+  const double stepsize = effthick/100.;
+
+  if(debugCE) std::cout<<"Entering Loop"<<std::endl;
+  while(effthick > 0.)
+  {
+    if(debugCE) std::cout<<"effthick is: "<<effthick<<std::endl;
+    if(debugCE) std::cout<<"adding "<<spline->Eval(E+elost)*stepsize<<" to elost"<<std::endl;
+    
+    elost += spline->Eval(E+elost)*stepsize;
+
+    if(debugCE) std::cout<<"elost is at "<<elost<<std::endl;
+    
+    effthick -= stepsize;
+  }
+    
+  if(debugCE) std::cout<<"My energy lost is: "<<elost<<" MeV"<<std::endl<<std::endl;
   
   return((E+elost));
 }

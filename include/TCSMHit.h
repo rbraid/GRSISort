@@ -9,6 +9,7 @@
 #include <iostream>
 
 #include "TMath.h"
+#include "TSpline.h"
 
 #include "TChannel.h"
 #include "TVector3.h" 
