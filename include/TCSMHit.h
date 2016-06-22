@@ -127,7 +127,12 @@ class TCSMHit : public TGRSIDetectorHit 	{
 		TString GetIsotope() const;
 		Double_t GetCorrectedEnergyMeV();
 		Double_t GetCorrectedEnergyMeV(TString);
+		Double_t GetCorrectedEnergyMeVTarget(double);
+		Double_t GetCorrectedEnergyMeVTarget(double,TString);
+		Double_t GetCorrectedEnergyMeVDetector();
+		Double_t GetCorrectedEnergyMeVDetector(TString);
 		Double_t GetCorrectedEnergy()		{return GetCorrectedEnergyMeV()*1000.;}
+		Double_t GetCorrectedEnergy(const TString tmp)		{return GetCorrectedEnergyMeV(tmp)*1000.;}
 		bool IsotopeSet();
 		Double_t GetMassMeV() const;
 

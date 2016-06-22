@@ -91,15 +91,31 @@ Double_t TCSMHit::GetCorrectedEnergyMeV()
     std::cerr<<" Caution: Correcting Energy when Isotope isn't set!"<<std::endl;
     return(GetEnergyMeV());
   }
-
+  
   return( GetCorrectedEnergyMeV(GetIsotope()));
 }
 
 Double_t TCSMHit::GetCorrectedEnergyMeV(TString tempIsotope)
 {
+  return(GetCorrectedEnergyMeVTarget(GetCorrectedEnergyMeVDetector(tempIsotope),tempIsotope));
+}
+
+Double_t TCSMHit::GetCorrectedEnergyMeVTarget(double energy)
+{
+  if(!IsotopeSet())
+  {
+    std::cerr<<" Caution: Correcting Energy when Isotope isn't set!"<<std::endl;
+    return(GetEnergyMeV());
+  }
+
+  return( GetCorrectedEnergyMeVTarget(energy,GetIsotope()));
+}
+
+Double_t TCSMHit::GetCorrectedEnergyMeVTarget(double energy, TString tempIsotope)
+{
   bool debugCE = 0;
   
-  Double_t E = GetEnergyMeV();  //Go from keV to MeV
+  Double_t E = energy;
   
   if(debugCE) std::cout<<"My initial energy is: "<<E<<" MeV"<<std::endl;
   double effthick = 2.4/1000.; //This function uses mm not um.
@@ -177,7 +193,7 @@ Double_t TCSMHit::GetCorrectedEnergyMeV(TString tempIsotope)
 
   else
   {
-    std::cerr<<"Unsupported Isotope in Energy Correction: "<<tempIsotope<<std::endl;
+    std::cerr<<"Unsupported Isotope in Energy Correction for Target: "<<tempIsotope<<std::endl;
     return(GetEnergyMeV());
   }
 
@@ -203,6 +219,129 @@ Double_t TCSMHit::GetCorrectedEnergyMeV(TString tempIsotope)
   }
     
   if(debugCE) std::cout<<"My energy lost is: "<<elost<<" MeV"<<std::endl<<std::endl;
+  
+  return((E+elost));
+}
+
+Double_t TCSMHit::GetCorrectedEnergyMeVDetector()
+{
+  if(!IsotopeSet())
+  {
+    std::cerr<<" Caution: Correcting Energy when Isotope isn't set!"<<std::endl;
+    return(GetEnergyMeV());
+  }
+  
+  return( GetCorrectedEnergyMeVDetector(GetIsotope()));
+}
+
+Double_t TCSMHit::GetCorrectedEnergyMeVDetector(TString tempIsotope)
+{
+  bool debugCE = 0;
+  
+  Double_t E = GetEnergyMeV();  //Go from keV to MeV
+  
+  if(debugCE) std::cout<<"My initial energy is: "<<E<<" MeV"<<std::endl;
+  double effthick = 0.0003; //3000 Angstrom in mm
+  effthick = effthick/cos(GetTheta() - 31.*TMath::Pi()/180.); //This takes into account the angle effect, the minimum is perpindicular
+  if(debugCE) std::cout<<"The effective thickness is: "<<effthick<<" mm, due to an angle of: "<<GetThetaDeg()-31.<<" degrees"<<std::endl;
+  
+  Double_t elost = 0.;
+  
+  tempIsotope.ToLower();
+  
+  if(debugCE) std::cout<<"tempIsotope is: "<<tempIsotope<<std::endl;
+  
+  double Energy[56]={0.5	,0.55	,0.6	,0.65	,0.7	,0.8	,0.9	,1	,1.1	,1.2	,1.3	,1.4	,1.5	,1.6	,1.7	,1.8	,2	,2.25	,2.5	,2.75	,3	,3.25	,3.5	,3.75	,4	,4.5	,5	,5.5	,6	,6.5	,7	,8	,9	,10	,11	,12	,13	,14	,15	,16	,17	,18	,20	,22.5	,25	,27.5	,30	,32.5	,35	,37.5	,40	,45	,50	,55	,60	,65};
+  
+  double StoppingPowerAl[56];
+  
+  
+  if(tempIsotope == "12be")
+  {
+    double tmpArray[] = {488.47	,511.603	,533.518	,554.096	,573.627	,609.21	,640.613	,668.303	,692.559	,713.766	,732.213	,748.391	,762.296	,774.423	,784.768	,793.728	,807.686	,819.438	,826.335	,829.665	,830.221	,828.897	,825.989	,822.094	,817.31	,806.168	,793.851	,781.054	,768.172	,755.401	,742.9399	,719.1385	,696.9579	,676.1922	,656.9376	,638.8914	,621.9519	,606.0175	,590.9874	,576.7608	,563.1371	,550.3159	,526.2793	,499.0422	,474.712	,450.087	,426.0658	,406.0477	,387.8321	,371.0184	,355.5063	,327.7858	,303.7693	,282.8555	,264.544	,248.2341	};
+    
+    for(int i=0; i<56;i++)
+      StoppingPowerAl[i] = tmpArray[i];
+  }
+  
+  else if(tempIsotope ==  "11be")
+  {
+    double tmpArray[] = {509.639	,533.515	,556.067	,577.178	,596.838	,632.568	,663.609	,690.532	,713.814	,733.944	,751.11	,765.907	,778.427	,789.067	,798.024	,805.595	,816.772	,825.344	,829.457	,830.2	,828.668	,825.353	,820.754	,815.367	,809.289	,796.058	,782.151	,768.061	,754.1857	,740.6208	,727.5643	,702.671	,679.7968	,658.5364	,638.7862	,620.3437	,603.1073	,586.8757	,571.548	,557.1236	,543.4018	,530.2823	,506.0487	,478.8145	,452.1867	,425.8637	,404.1443	,384.4276	,366.4132	,349.9006	,334.7895	,307.7707	,284.5555	,264.3429	,246.7323	,231.2232	};
+    
+    for(int i=0; i<56;i++)
+      StoppingPowerAl[i] = tmpArray[i];
+  }
+  
+  else if(tempIsotope ==  "10be")
+  {
+    double tmpArray[] = {533.7,558.321,581.31,602.654,622.543,657.921,688.202,713.956,735.866,754.419,770.005,783.019,793.855,802.809,810.078,815.96,	824.157,829.248,830.177,828.334,824.413,819.109,812.918,806.038,798.667,783.447,767.95,752.6681,737.799,723.5397,709.7882,684.003,660.3354,638.5802,618.3344,599.5957,581.9625,565.5336,549.9084,535.2861,521.3662,508.1484,483.6178,454.7866,425.6613,401.9403,380.5226,361.2074,343.4943,327.3828,312.6727,286.5556,264.2417,244.9302,228.2205,213.6122};
+    
+    for(int i=0; i<56;i++)
+      StoppingPowerAl[i] = tmpArray[i];
+  }
+  
+  else if(tempIsotope ==  "9be")
+  {
+    double tmpArray[] = {533.7	,558.321	,581.31	,602.654	,622.543	,657.921	,688.202	,713.956	,735.866	,754.419	,770.005	,783.019	,793.855	,802.809	,810.078	,815.96	,824.157	,829.248	,830.177	,828.334	,824.413	,819.109	,812.918	,806.038	,798.667	,783.447	,767.95	,752.6681	,737.799	,723.5397	,709.7882	,684.003	,660.3354	,638.5802	,618.3344	,599.5957	,581.9625	,565.5336	,549.9084	,535.2861	,521.3662	,508.1484	,483.6178	,454.7866	,425.6613	,401.9403	,380.5226	,361.2074	,343.4943	,327.3828	,312.6727	,286.5556	,264.2417	,244.9302	,228.2205	,213.6122	};
+    
+    for(int i=0; i<56;i++)
+      StoppingPowerAl[i] = tmpArray[i];
+  }
+  
+  else if(tempIsotope ==  "4he")
+  {
+    double tmpArray[] = {362.6301	,362.9685	,362.2161	,360.5709	,358.3315	,352.366	,345.3136	,337.6707	,329.8349	,321.9044	,314.0783	,306.3555	,299.0355	,291.8177	,285.0019	,278.3877	,266.0631	,252.1381	,239.6176	,228.4006	,218.2862	,209.0739	,200.6631	,193.0537	,186.0454	,173.6314	,163.0199	,153.8104	,145.7023	,138.49545	,132.18948	,121.27962	,111.97182	,103.26547	,96.52021	,90.67577	,85.58197	,81.08868	,77.1058	,73.53326	,70.321	,67.40897	,62.31549	,57.05196	,52.6891	,49.00673	,45.86473	,43.13303	,40.74155	,38.63026	,36.74912	,33.5372	,30.88565	,28.66437	,26.77328	,25.14236	};
+    
+    for(int i=0; i<56;i++)
+      StoppingPowerAl[i] = tmpArray[i];
+  }
+  
+  else if(tempIsotope ==  "6he")
+  {
+    double tmpArray[] = {348.033	,353.242	,357.064	,359.7973	,361.6389	,363.0417	,362.2639	,360.0003	,356.6471	,352.6019	,347.963	,343.0292	,337.8994	,332.6731	,327.4496	,322.1284	,311.7919	,299.2547	,287.5243	,276.599	,266.3775	,256.9592	,248.1432	,239.9292	,232.3168	,218.5959	,206.4788	,195.8646	,186.3526	,177.8424	,170.2335	,157.0188	,145.9072	,136.59771	,128.48986	,121.48324	,115.27758	,109.07267	,103.46837	,98.85458	,94.66121	,90.84819	,84.183	,77.24774	,71.49347	,66.61993	,62.43695	,58.8044	,55.62219	,52.79027	,50.26857	,45.95571	,42.38339	,39.38147	,36.81985	,34.60847	};
+    
+    for(int i=0; i<56;i++)
+      StoppingPowerAl[i] = tmpArray[i];
+  }
+  
+  else if(tempIsotope ==  "13c")
+  {
+    double tmpArray[] = {757.33	,794.24	,829.03	,861.64	,892.17	,947.36	,995.6	,1037.33	,1074.594	,1106.964	,1135.419	,1159.942	,1181.52	,1201.145	,1217.808	,1232.505	,1256.978	,1280.437	,1296.992	,1308.619	,1316.303	,1322.029	,1324.791	,1326.582	,1326.396	,1324.08	,1318.821	,1312.605	,1304.422	,1295.265	,1286.128	,1266.901	,1247.72	,1227.573	,1208.45	,1189.346	,1170.257	,1151.18	,1133.112	,1115.052	,1097.9982	,1080.9501	,1047.8674	,1007.7832	,970.7147	,936.0578	,897.5098	,859.8686	,828.1329	,798.3017	,770.4741	,719.5275	,674.3896	,634.1583	,598.2318	,565.9091	};
+    
+    for(int i=0; i<56;i++)
+      StoppingPowerAl[i] = tmpArray[i];
+  }
+  
+  else
+  {
+    std::cerr<<"Unsupported Isotope in Energy Correction for Dead Layer: "<<tempIsotope<<std::endl;
+    return(GetEnergyMeV());
+  }
+  
+  
+  //TGraph *stGraph = new TGraph(56, Energy, StoppingPowerAl);
+  TSpline3 *spline = new TSpline3("myspline", Energy, StoppingPowerAl, 56);
+  
+  //if(debugCE) std::cout<<"Linear Approx is: "<<spline->Eval(E)*effthick<<" MeV"<<std::endl;
+  
+//   const double stepsize = effthick/100.;
+//   
+//   if(debugCE) std::cout<<"Entering Loop"<<std::endl;
+//   while(effthick > 0.)
+//   {
+//     if(debugCE) std::cout<<"effthick is: "<<effthick<<std::endl;
+//     if(debugCE) std::cout<<"adding "<<spline->Eval(E+elost)*stepsize<<" to elost"<<std::endl;
+//     
+//     elost += spline->Eval(E+elost)*stepsize;
+//     
+//     if(debugCE) std::cout<<"elost is at "<<elost<<std::endl;
+//     
+//     effthick -= stepsize;
+//   }
+
+  elost = spline->Eval(E)*effthick;
+  
+  if(debugCE) std::cout<<"My energy lost is: "<<elost<<" MeV"<<std::endl<<"SRIM says it should be ~.2 MeV"<<std::endl<<std::endl;
   
   return((E+elost));
 }
