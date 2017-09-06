@@ -46,7 +46,7 @@ public:
    std::vector<Int_t> ccLong;     //->  Integration over the wavefrom fall (Descant only?)
    std::vector<Int_t> Led;        //->  LED of each pileup hit
    std::vector<Int_t> Charge;	    //->  The Integrated Charge 
-
+   
    //unsigned long TimeStamp;     //->
    Int_t TimeStampLow;            //->  Timestamp low bits
    Int_t TimeStampHigh;           //->  Timestamp high bits
@@ -76,9 +76,7 @@ public:
    Int_t  GetCfd(int iter=0)const; //!
    Int_t  GetLed(int iter=0)const; //!
    Int_t  GetZCross(int iter=0)const; //! 
-     
-   
-   
+   double GetEfficiencyWeight(int iter=0) const; //!   
    
    long GetTimeStamp_ns(); //!
 

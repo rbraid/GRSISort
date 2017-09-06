@@ -5,6 +5,7 @@
 #include <cstdio>
 #include <vector>
 #include <set>
+#include <iostream>
 
 #include "Globals.h"
 #include "TFragment.h"
@@ -19,6 +20,7 @@ class TTigressData : public TGRSIDetectorData {
 		std::vector<UShort_t> fClover_Nbr;		//!
 		std::vector<UShort_t> fCore_Nbr;		//!
 		std::vector<Double_t> fCore_Eng;		//!
+		std::vector<Double_t> fCore_Eff;		//!
 		std::vector<Int_t>    fCore_Chg;		//!
 		std::vector<Double_t> fCore_TimeCFD;		//!
 		std::vector<Double_t> fCore_TimeLED;		//!
@@ -53,6 +55,7 @@ class TTigressData : public TGRSIDetectorData {
 		inline void SetCloverNumber(const UShort_t &CloverNumber)   {fClover_Nbr.push_back(CloverNumber);  }//!
 		inline void SetCoreNumber(const UShort_t  &CoreNumber)	   {fCore_Nbr.push_back(CoreNumber);      }	//!
 		inline void SetCoreEnergy(const Double_t  &CoreEnergy)	   {fCore_Eng.push_back(CoreEnergy);      }	//!
+		inline void SetCoreEfficiency( const Double_t &CoreEfficiency) {fCore_Eff.push_back(CoreEfficiency);}
 		inline void SetCoreCharge(const Int_t &CoreCharge)	         {fCore_Chg.push_back(CoreCharge);      }	//!
 		inline void SetCoreCFD(const Double_t &CoreTimeCFD)	      {fCore_TimeCFD.push_back(CoreTimeCFD); }	//!	
 		inline void SetCoreLED(const Double_t &CoreTimeLED)	      {fCore_TimeLED.push_back(CoreTimeLED); }	//!	
@@ -61,7 +64,7 @@ class TTigressData : public TGRSIDetectorData {
 		
 		inline void SetCoreWave(const std::vector<int> &CoreWave)	{fCore_Wave.push_back(CoreWave);} //!
 	
-		inline void SetCore(const UShort_t &CloverNbr, const UShort_t &CoreNbr, const Double_t &CrystalEnergy, const Int_t &CrystalCharge, const Double_t &CrystalTimeCFD,const Double_t &CrystalTimeLED,const Double_t &CrystalTime)	{
+		inline void SetCore(const UShort_t &CloverNbr, const UShort_t &CoreNbr, const Double_t &CrystalEnergy, const Int_t &CrystalCharge, const Double_t &CrystalTimeCFD,const Double_t &CrystalTimeLED,const Double_t &CrystalTime,const Double_t &CrystalEfficiency)	{
 
 			SetCloverNumber(CloverNbr);
 			SetCoreNumber(CoreNbr);
@@ -70,6 +73,7 @@ class TTigressData : public TGRSIDetectorData {
 			SetCoreCFD(CrystalTimeCFD);		
 			SetCoreLED(CrystalTimeLED);		
 			SetCoreTime(CrystalTime);		
+            SetCoreEfficiency(CrystalEfficiency);
 
 		}	//!
 
@@ -109,7 +113,8 @@ class TTigressData : public TGRSIDetectorData {
 
 				SetCoreCharge(frag->Charge.at(0));
 				SetCoreCFD(frag->Cfd.at(0));		
-				SetCoreLED(frag->Led.at(0));		
+				SetCoreLED(frag->Led.at(0));	
+                SetCoreEfficiency(frag->GetEfficiencyWeight());                
 			   //SetCoreTime(frag->GetTimeStamp());		
 				SetCoreTime(frag->Zc.at(0));		
 		}; //! 
@@ -176,6 +181,7 @@ class TTigressData : public TGRSIDetectorData {
 		inline UShort_t GetCloverNumber(const unsigned int &i)	{return fClover_Nbr.at(i);}	//!
 		inline UShort_t GetCoreNumber(const unsigned int &i)	{return fCore_Nbr.at(i);}	//!
 		inline Double_t GetCoreEnergy(const unsigned int &i)	{return fCore_Eng.at(i);}	//!
+		inline Double_t GetCoreEfficiency(const unsigned int &i)	{return fCore_Eff.at(i);}	//!
 		inline Int_t    GetCoreCharge(const unsigned int &i)	{return fCore_Chg.at(i);}	//!
 		inline Double_t GetCoreCFD(const unsigned int &i)	{return fCore_TimeCFD.at(i);}	//!
 		inline Double_t GetCoreLED(const unsigned int &i)	{return fCore_TimeLED.at(i);}	//!	

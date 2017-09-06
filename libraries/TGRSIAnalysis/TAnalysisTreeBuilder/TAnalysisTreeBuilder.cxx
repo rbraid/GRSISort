@@ -771,7 +771,7 @@ void TAnalysisTreeBuilder::CloseAnalysisFile() {
    ///******************************////
    // this will be removed and put into a seperate thread later.
 
-   printf("Writing file %s\n",fCurrentAnalysisFile->GetName());
+   printf("\nWriting file %s\n",fCurrentAnalysisFile->GetName());
    ///******************************////
    ///******************************////
 

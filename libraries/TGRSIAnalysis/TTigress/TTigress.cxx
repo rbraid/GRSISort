@@ -119,6 +119,7 @@ void	TTigress::BuildHits(TGRSIDetectorData *data,Option_t *opt)	{
       temp_crystal.SetEnergy(tdata->GetCoreEnergy(i));
       temp_crystal.SetTime(tdata->GetCoreTime(i));
       temp_crystal.SetCfd(tdata->GetCoreCFD(i));
+      temp_crystal.SetEfficiency(tdata->GetCoreEfficiency(i));
 
 		if(TTigress::SetCoreWave())	{
         	temp_crystal.SetWave(tdata->GetCoreWave(i));

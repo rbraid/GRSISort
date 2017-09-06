@@ -149,14 +149,32 @@ double TFragment::GetEnergy(int i) const {
    if(!chan || !(Charge.size()>i))
       return 0.00;
    if(chan->UseCalFileIntegration()) {
-      //printf("I am here\n");
      return chan->CalibrateENG((int)(Charge.at(i)),0);  // this will use the integration value
                                                         // in the tchannel if it exists.
    }
    if(KValue.size()>i && KValue.at(i)>0)
-     return chan->CalibrateENG((int)(Charge.at(i)),(int)KValue.at(i));
+   {
+     return chan->CalibrateENG((int)(Charge.at(i)),(int)KValue.at(i));     
+   } 
    return chan->CalibrateENG((int)(Charge.at(i)));
 }
+
+double TFragment::GetEfficiencyWeight(int i) const {
+  bool debug = 0;
+  
+  TChannel *chan = TChannel::GetChannel(ChannelAddress);
+  if(!chan)
+  {
+    std::cerr<<"Error in GetEfficiencyWeight, no channel defined!"<<std::endl;
+    return 0.00;
+  }
+  if(chan->UseCalFileIntegration()) {
+    return chan->CalibrateEFF(GetEnergy(i));
+  }
+  if(debug && GetEnergy(i)>1) std::cout<<"Calling B, Charge: "<<Charge.at(i)<<", Energy: "<<GetEnergy(i)<<", EFF: "<<chan->CalibrateEFF(GetEnergy(i))<<std::endl;
+  return chan->CalibrateEFF(GetEnergy(i));
+}
+
 
 double TFragment::GetCharge(int i) const {
    TChannel *chan = TChannel::GetChannel(ChannelAddress);

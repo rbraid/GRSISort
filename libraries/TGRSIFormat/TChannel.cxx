@@ -480,8 +480,29 @@ double TChannel::CalibrateTIME(double energy)  {
 
 
 double TChannel::CalibrateEFF(double energy) {
-   //This needs to be added
-   return 1.0;
+  //This function returns the weight of the efficiency.  So you would do roothistogram->Fill(value,CalibrateEFF);
+  double eff_weight = 0.0;
+  
+  if(EFFCoefficients.size() < 2)
+  {
+    return 0.;
+  }
+  else if(EFFCoefficients.size() % 2 == 1)
+  {
+    std::cerr<<" Error in CalibrateEFF: Odd number of Coefficients: "<<EFFCoefficients.size()<<std::endl; 
+    return 0.;
+  }
+  else if(EFFCoefficients.size() == 2)
+  {
+    eff_weight = EFFCoefficients.at(0)*exp(EFFCoefficients.at(1)*energy);
+    return 1./eff_weight;
+  }
+  else
+  {
+    std::cerr<<" Warning in CalibrateEFF: Only first order corrections supported at this time"<<std::endl; 
+    eff_weight = EFFCoefficients.at(0)*exp(EFFCoefficients.at(1)*energy);
+    return 1./eff_weight;
+  }
 }
 
 void TChannel::Print(Option_t *opt) const {
