@@ -115,8 +115,7 @@ int TWriteQueue::Size() {
 ClassImp(TAnalysisTreeBuilder)
 
 //This sets the minimum amount of memory that root can hold a tree in.
-//const size_t TAnalysisTreeBuilder::MEM_SIZE = (size_t)1024*(size_t)1024*(size_t)1024*(size_t)2; // 8 GB
-const size_t TAnalysisTreeBuilder::MEM_SIZE = (size_t)1024*(size_t)1024*(size_t)20; // 8 GB
+const size_t TAnalysisTreeBuilder::MEM_SIZE = (size_t)1024*(size_t)1024*(size_t)1024*(size_t)8; // 8 GB
 
 TAnalysisTreeBuilder* TAnalysisTreeBuilder::fAnalysisTreeBuilder = 0;
 
@@ -282,51 +281,9 @@ void TAnalysisTreeBuilder::SortFragmentChain() {
    return;
 }
 
-
 void TAnalysisTreeBuilder::SortFragmentTree() {
    //Sorts the fragment tree based on the TreeIndex major name.
    //It then puts the fragment into the event Q.
-  
-   fEntries = fCurrentFragTree->GetEntries();
-  
-   std::map<long,std::vector<TFragment>* > fragmap;
-
-   printf("starting fragment read.\n"); fflush(stdout);
-   long oldesttriggerid = 0;
-   for(long x=0;x<fEntries;x++) {
-     fFragmentsIn++;
-     while(TEventQueue::Size()>0) {
-       printf("sleeping %i  ....\n",TEventQueue::Size()); fflush(stdout);
-       std::this_thread::sleep_for(std::chrono::milliseconds(500));
-     }
-     fCurrentFragTree->GetEntry(x);
-     if(fragmap.count(fCurrentFragPtr->TriggerId)==0)
-       fragmap[fCurrentFragPtr->TriggerId] = new std::vector<TFragment>;
-     fragmap[fCurrentFragPtr->TriggerId]->push_back(*fCurrentFragPtr);
-     if( (fCurrentFragPtr->TriggerId -oldesttriggerid) > 1000000) {
-       printf("\n\n %ld %ld \n",fCurrentFragPtr->TriggerId,oldesttriggerid); fflush(stdout);
-       for(std::map<long,std::vector<TFragment>* >::iterator it=fragmap.begin();it!=fragmap.end();) {
-         if(it->first > abs(fCurrentFragPtr->TriggerId-500000))  {
-           printf("setting oldest to: %ld\n",oldesttriggerid);
-           oldesttriggerid = fragmap.begin()->first;
-           break;
-         }
-         TEventQueue::Get()->Add(it->second);
-         fragmap.erase(it++);         
-       }
-     }
-     if(fCurrentFragPtr)
-       delete fCurrentFragPtr;
-     fCurrentFragPtr = 0;
-   }
-   printf("finishied fragment read.\n"); fflush(stdout);
-   for(std::map<long,std::vector<TFragment>* >::iterator it=fragmap.begin();it!=fragmap.end();) {
-     TEventQueue::Get()->Add(it->second);
-     fragmap.erase(it++);         
-   }
-   
-   return;
-
    long major_min = (long) fCurrentFragTree->GetMinimum(fCurrentFragTree->GetTreeIndex()->GetMajorName());
    if(major_min<0)
       major_min = 0;
@@ -341,10 +298,6 @@ void TAnalysisTreeBuilder::SortFragmentTree() {
       while(fCurrentFragTree->GetEntryWithIndex(j,fragno++) != -1) {
          fFragmentsIn++;
          event->push_back(*fCurrentFragPtr);
-         if(fCurrentFragPtr)
-           delete fCurrentFragPtr;
-         fCurrentFragPtr = 0;
-
       }
       if(event->empty()) {
          delete event;
@@ -481,11 +434,6 @@ void TAnalysisTreeBuilder::SortFragmentTreeByTimeStamp() {
          event->push_back(*currentFrag);
          firstTimeStamp = currentFrag->GetTimeStamp(); //THIS IS FOR MOVING WINDO
       }
-      if(currentFrag)
-        delete currentFrag;
-      currentFrag=0;
-
-
    }
    //in case we have fragments left after all of the fragments have been processed, we add them to the queue now
    if(event->size() > 0) {
@@ -523,8 +471,7 @@ void TAnalysisTreeBuilder::SetupFragmentTree() {
 
    //Check to see if the fragment tree already has an index set. If not build the index based on timestamps if it is a Griffin 
    //fragment. If it is not Griffin build based on the trigger Id.
-//   if(!fCurrentFragTree->GetTreeIndex()) {
-   if(0) {
+   if(!fCurrentFragTree->GetTreeIndex()) {
       if(fCurrentRunInfo->MajorIndex().length()>0) {
          printf(DBLUE "Tree Index not found, building index on %s/%s..." RESET_COLOR,
                         fCurrentRunInfo->MajorIndex().c_str(),fCurrentRunInfo->MinorIndex().c_str());  fflush(stdout); 
@@ -605,8 +552,6 @@ void TAnalysisTreeBuilder::SetupAnalysisTree() {
 
    //tree->SetAutoFlush(-300000000);
    //tree->SetCacheSizeAux(true);
-
-   //tree->Print();
 
    //tree->SetAutoFlush(-500000000);
    //tree->SetCacheSize();
@@ -771,7 +716,7 @@ void TAnalysisTreeBuilder::CloseAnalysisFile() {
    ///******************************////
    // this will be removed and put into a seperate thread later.
 
-   printf("\nWriting file %s\n",fCurrentAnalysisFile->GetName());
+   printf("Writing file %s\n",fCurrentAnalysisFile->GetName());
    ///******************************////
    ///******************************////
 
