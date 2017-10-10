@@ -53,7 +53,7 @@ class TCrystalHit : public TGRSIDetectorHit	{
 		inline std::vector<int> *GetWave()	{	return &wave;	}	  //!
 
 
-	ClassDef(TCrystalHit,1)
+	ClassDef(TCrystalHit,2)
 };
 
 #endif
