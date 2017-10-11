@@ -201,9 +201,8 @@ TVector3 TCSM::GetPosition(int detector,char pos, int horizontalstrip, int verti
   //horizontal strips collect N charge!
   //vertical strips collect P charge!
   TVector3 Pos;
-  //TRandom3 *rndm = new TRandom3(0);
-  TRandom3 rndm(0);
-  double detTheta = 31. * (TMath::Pi()/180.);
+  TRandom3 *rndm = new TRandom3(0);
+  double detTheta = -31. * (TMath::Pi()/180.);
   double SideX = 64.62;
   double SideZ = 2.05;
   double dER = 62.14;
@@ -212,11 +211,11 @@ TVector3 TCSM::GetPosition(int detector,char pos, int horizontalstrip, int verti
 
   if(detector == 1)
     detTheta = -detTheta;
-  if(pos=='D'&&detector<3)
+  if(pos=='E')
     verticalstrip=15-verticalstrip;
 
-  x = (50./32.)*(2*verticalstrip+1) - (50./16.)*8 + rndm.Uniform(-50./32.,50./32.);
-  y = (50./32.)*(2*horizontalstrip+1) - (50/16.)*8 + rndm.Uniform(-50./32.,50./32.);
+  x = (50./32.)*(2*verticalstrip+1) - (50./16.)*8 + rndm->Uniform(-50./32.,50./32.);
+  y = (50./32.)*(2*horizontalstrip+1) - (50/16.)*8 + rndm->Uniform(-50./32.,50./32.);
   
   if(pos=='D')
     z = dER;
@@ -234,27 +233,19 @@ TVector3 TCSM::GetPosition(int detector,char pos, int horizontalstrip, int verti
   {
     //Right Side
     verticalstrip=15-verticalstrip;
-    xp = -SideX;
-    zp = SideZ + (50./32.)*(2*verticalstrip+1) - (50/16.)*8 + rndm.Uniform(-50./32.,50./32.);
+    xp = SideX;
+    zp = SideZ + (50./32.)*(2*verticalstrip+1) - (50/16.)*8 + rndm->Uniform(-50./32.,50./32.);
   }
   else if(detector==4&&pos=='D')
   {
     //Left Side
-    xp = SideX;
-    zp = SideZ + (50./32.)*(2*verticalstrip+1) - (50/16.)*8 + rndm.Uniform(-50./32.,50./32.);
+    xp = -SideX;
+    zp = SideZ + (50./32.)*(2*verticalstrip+1) - (50/16.)*8 + rndm->Uniform(-50./32.,50./32.);
   }
 
   Pos.SetX(xp + X);
   Pos.SetY(y + Y);
   Pos.SetZ(zp+ Z);
-
-//   if(detector%2==0)
-//   {
-//     Pos.SetX(0);
-//     Pos.SetY(0);
-//     Pos.SetZ(1);
-//   }
-  
   return(Pos);
 }
 
