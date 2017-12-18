@@ -191,7 +191,11 @@ void TCSM::Clear(Option_t *option)
 
 void TCSM::Print(Option_t *option)
 {
-  printf("not yet written...\n");
+  cout<<"TCSM::Print()"<<endl;
+  for(int loop = 0; loop<csm_hits.size();loop++)
+  {
+    csm_hits.at(loop).Print();
+  }
   return;
 }
 
@@ -1182,4 +1186,3 @@ bool TCSM::AlmostEqual(double val1, double val2)
   double frac = fabs(val1 - val2)/((val1+val2)/2.);
   return frac < AlmostEqualWindow;
 }
-
