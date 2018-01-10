@@ -199,6 +199,11 @@ void TCSM::Print(Option_t *option)
   return;
 }
 
+void SetHits(std::vector<TCSMHit> tmp) 
+{
+  csm_hits = tmp;
+}
+
 
 TVector3 TCSM::GetPosition(int detector,char pos, int horizontalstrip, int verticalstrip, double X, double Y, double Z)
 {

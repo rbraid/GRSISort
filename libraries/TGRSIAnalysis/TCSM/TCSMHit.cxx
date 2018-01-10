@@ -220,6 +220,8 @@ Double_t TCSMHit::GetCorrectedEnergyMeVTarget(double energy, TString tempIsotope
     
   if(debugCE) std::cout<<"My energy lost is: "<<elost<<" MeV"<<std::endl<<std::endl;
   
+  delete spline;
+  
   return((E+elost));
 }
 
@@ -342,6 +344,8 @@ Double_t TCSMHit::GetCorrectedEnergyMeVDetector(TString tempIsotope)
   elost = spline->Eval(E)*effthick;
   
   if(debugCE) std::cout<<"My energy lost is: "<<elost<<" MeV"<<std::endl<<"SRIM says it should be ~.2 MeV"<<std::endl<<std::endl;
+  
+  delete spline;
   
   return((E+elost));
 }

@@ -45,8 +45,8 @@ class TCSM :  public TGRSIDetector 	{
 		virtual void Clear(Option_t * = "");		//!
 		virtual void Print(Option_t * = "");		//!
 		void BuildHits(TGRSIDetectorData *cd = 0,  Option_t * = "");			//!
-        inline void SetHits(std::vector<TCSMHit> tmp) {csm_hits = tmp;};
-
+        void SetHits(std::vector<TCSMHit> tmp);
+        
 		TCSMHit *GetHit(int i)		{return &csm_hits.at(i);}	//->
 		Short_t GetMultiplicity()	{return csm_hits.size();}	//->
 
