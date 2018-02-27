@@ -51,7 +51,8 @@ class TCSM :  public TGRSIDetector 	{
 		Short_t GetMultiplicity()	{return csm_hits.size();}	//->
 
 	   static TVector3 GetPosition(int detector, char pos, int horizontalstrip, int verticalstrip, double X=0.00, double Y=0.00, double Z=0.00);	//! 
-
+       static TVector3 GetPositionsNew(int detector,char pos, int horizontalstrip, int verticalstrip);
+       
       void FillData(TFragment*,TChannel*,MNEMONIC*);
 
 	private: 
