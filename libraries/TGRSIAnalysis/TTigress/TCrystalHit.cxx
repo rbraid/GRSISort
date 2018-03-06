@@ -27,6 +27,12 @@ void TCrystalHit::Clear(Option_t *opt)	{
 
 
 void TCrystalHit::Print(Option_t *opt)	{
-	//not yet written.
-	printf("TCrystalHit::Print() not yet written.\n");
+   std::cout<<"Get Segment: "<<GetSegment()      <<std::endl;
+   std::cout<<"Get Charge: "<<GetCharge()        <<std::endl;
+   std::cout<<"Get Energy: "<<GetEnergy()        <<std::endl;
+   std::cout<<"Get Time: "<<GetTime()            <<std::endl;
+   std::cout<<"Get Cfd: "<<GetCfd()              <<std::endl;
+   std::cout<<"Get Efficiency: "<<GetEfficiency()<<std::endl;
+   std::cout<<"Is Suppressed: "<<Suppress()<<std::endl;
 }
+
