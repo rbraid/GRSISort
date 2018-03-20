@@ -259,9 +259,6 @@ TVector3 TCSM::GetPosition(int detector,char pos, int horizontalstrip, int verti
   Pos.SetY(y + Y);
   Pos.SetZ(zp+ Z);
   
-  Pos.SetX(Pos.X()*1.15);
-  Pos.SetZ(Pos.Z()*1.15);
-  
   return(Pos);
 }
 
