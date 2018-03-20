@@ -235,7 +235,6 @@ TVector3 TCSM::GetPosition(int detector,char pos, int horizontalstrip, int verti
   //z' = z*cos q - x*sin q
   //x' = z*sin q + x*cos q
 
-
   double xp = z*sin(detTheta) + x*cos(detTheta);
   double zp = z*cos(detTheta) - x*sin(detTheta);
 
