@@ -596,7 +596,7 @@ Double_t TCSMHit::GetDEnergy() const
     {
       case 6:
       case 9:
-      trustHoriztonal = 0;
+        trustHoriztonal = 0;
       break;
     }
     break;
@@ -607,13 +607,13 @@ Double_t TCSMHit::GetDEnergy() const
       //case 8:
       case 9:
       case 10:
-      trustHoriztonal = 0;
+        trustHoriztonal = 0;
       break;
     }
     switch(GetDVerticalStrip())
     {
       case 5:
-      trustVertical = 0;
+        trustVertical = 0;
       break;
     }
     break;
@@ -621,10 +621,10 @@ Double_t TCSMHit::GetDEnergy() const
     case 3:
       switch(GetDHorizontalStrip())
       {
-	case 12:
-	case 15:
-	  trustHoriztonal = 0;
-	  break;
+        case 12:
+        case 15:
+          trustHoriztonal = 0;
+        break;
       }
     break;
 
@@ -677,38 +677,38 @@ Double_t TCSMHit::GetEEnergy() const
   switch(GetDetectorNumber())
   {
     case 1:
-
+      
       break;
-
+      
     case 2:
       switch(GetEHorizontalStrip())
       {
-	case 0:
-	case 2:
-	case 3:
-	case 6:
-	//case 8:
-	case 12:
-	//case 15:
-	trustHoriztonal = 0;
-	break;
+        case 0:
+        case 2:
+        case 3:
+        case 6:
+          //case 8:
+        case 12:
+          //case 15:
+          trustHoriztonal = 0;
+          break;
       }
       switch(GetEVerticalStrip())
       {
-	case 0:
-	trustVertical = 0;
-	break;
+        case 0:
+          trustVertical = 0;
+          break;
       }
       break;
-
-    case 3:
-      break;
-
-    case 4:
-      break;
-
-    default:
-      std::cerr<<"  ERROR, Trying to get energy from a E detector that doesn't exist!"<<std::endl;
+      
+        case 3:
+          break;
+          
+        case 4:
+          break;
+          
+        default:
+          std::cerr<<"  ERROR, Trying to get energy from a E detector that doesn't exist!"<<std::endl;
   }
   
   if(trustVertical && trustHoriztonal)
@@ -723,7 +723,7 @@ Double_t TCSMHit::GetEEnergy() const
     return -1; //I added this here so that there is guaranteed a return at the end of the function RD 
     std::cerr<<"  ERROR, I don't know who to trust in GetEEnergy()"<<std::endl;
   }
-
+  
 }
 
 void TCSMHit::Print(Option_t *options) const	{
