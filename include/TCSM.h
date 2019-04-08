@@ -78,7 +78,7 @@ class TCSM :  public TGRSIDetector 	{
 		static int fCfdBuildDiff; //!   // largest acceptable time difference between events (clock ticks)  (50 ns)
 
         
-   ClassDef(TCSM,4)  // CSM Analysis structure
+   ClassDef(TCSM,5)  // CSM Analysis structure
 };
 
 

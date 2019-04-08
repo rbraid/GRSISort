@@ -7,16 +7,20 @@ ClassImp(TCSM)
 
 int TCSM::fCfdBuildDiff = 5;
 
-TCSM::TCSM() : data(0)
+TCSM::TCSM() : data(0), csm_hits(20,TCSMHit())
+
 {
   Class()->IgnoreTObjectStreamer(true);
   //InitializeSRIMInputs();
   AlmostEqualWindow = .3;
+  
+//   std::cout<<"csm_hits capacity in intializer: "<<csm_hits.capacity()<<std::endl;
 }
 
 TCSM::~TCSM()
 {
   if(data) delete data;
+//   std::cout<<"~TCSM()"<<std::endl;
 }
 
 void TCSM::FillData(TFragment *frag,TChannel *channel,MNEMONIC *mnemonic)
@@ -191,7 +195,8 @@ void TCSM::Clear(Option_t *option)
 
 void TCSM::Print(Option_t *option)
 {
-  cout<<"TCSM::Print()"<<endl;
+  cout<<DRED<<"TCSM::Print()"<<RESET_COLOR<<endl;
+  cout<<DGREEN<<"Multiplicity: "<<csm_hits.size()<<RESET_COLOR<<endl;
   for(int loop = 0; loop<csm_hits.size();loop++)
   {
     csm_hits.at(loop).Print();
@@ -201,7 +206,17 @@ void TCSM::Print(Option_t *option)
 
 void TCSM::SetHits(std::vector<TCSMHit> tmp) 
 {
-  csm_hits = tmp;
+//   std::cout<<"Before Setting Hits in SetHits"<<std::endl;
+//   std::cout<<"csm_hits.Size(): "<<csm_hits.size()<<std::endl;
+//   std::cout<<"csm_hits.capacity(): "<<csm_hits.capacity()<<std::endl;
+//   csm_hits.resize(5);
+//   std::cout<<"csm_hits.capacity() after resize: "<<csm_hits.capacity()<<std::endl;
+  
+//   csm_hits = tmp;
+  for(int i = 0;i<tmp.size();i++)
+    csm_hits.push_back(tmp.at(i));
+//   std::cout<<"csm_hits.Size(): "<<csm_hits.size()<<std::endl;
+//   std::cout<<"After Setting Hits in SetHits"<<std::endl;
 }
 
 

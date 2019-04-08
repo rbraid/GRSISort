@@ -194,7 +194,7 @@ class TCSMHit : public TGRSIDetectorHit 	{
 		void SetIsotope(TString);
 
 		
-	ClassDef(TCSMHit,3)  //CSM Hits
+	ClassDef(TCSMHit,4)  //CSM Hits
 };
 
 

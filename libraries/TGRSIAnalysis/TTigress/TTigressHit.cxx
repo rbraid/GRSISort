@@ -35,9 +35,12 @@ void TTigressHit::Clear(Option_t *opt)	{
 
 
 void TTigressHit::Print(Option_t *opt)	{
-	printf("Tigress hit energy: %.2f\n",GetCore()->GetEnergy());
-	printf("Tigress hit time:   %.2f\n",GetCore()->GetTime());
-	//printf("Tigress hit TV3 theta: %.2f\tphi%.2f\n",position.Theta() *180/(3.141597),position.Phi() *180/(3.141597));
+  std::cout<<"TigressHit GetDetectorNumber: "<<GetDetectorNumber()<<std::endl;
+  std::cout<<"TigressHit GetCrystalNumber: "<<GetCrystalNumber()<<std::endl;
+  std::cout<<"TigressHit GetInitialHit: "<<GetInitialHit()<<std::endl;
+  std::cout<<"TigressHit GetCharge: "<<GetCharge()<<std::endl;
+  std::cout<<"TigressHit GetEnergy: "<<GetEnergy()<<std::endl;
+  
 }
 
 

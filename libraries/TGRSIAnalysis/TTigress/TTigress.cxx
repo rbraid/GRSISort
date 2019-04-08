@@ -46,8 +46,12 @@ void TTigress::Clear(Option_t *opt)	{
 
 
 void TTigress::Print(Option_t *opt)	{
-  //printf("not yet written...\n");
-  //printf(DYELLOW "TTigress::beta  =  %.04f" RESET_COLOR  "\n",beta);
+  cout<<DRED<<"TTigress::Print()"<<RESET_COLOR<<endl;
+  cout<<DGREEN<<"Multiplicity: "<<GetAddBackMultiplicity()<<RESET_COLOR<<endl;
+  for(int loop = 0; loop<GetAddBackMultiplicity();loop++)
+  {
+    addback_hits.at(loop).Print();
+  }
   return;
 }
 
